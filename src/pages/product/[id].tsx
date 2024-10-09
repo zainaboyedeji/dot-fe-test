@@ -14,7 +14,7 @@ export function ProductDetail() {
           <div className="flex flex-col lg:flex-row">
             <div className="bg-gray-200 w-full lg:w-1/2 h-64 rounded-lg"></div>
             <div className="flex-1 lg:ml-8 mt-4 lg:mt-0">
-              <p className="text-sm text-gray-500">CLOTHING > MEN</p>
+              <p className="text-sm text-gray-500">CLOTHING  MEN</p>
               <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
               <p className="text-xl text-green-600 font-bold">${product.price.toFixed(2)}</p>
               <p className="text-gray-500">In stock: {product.stock}</p>

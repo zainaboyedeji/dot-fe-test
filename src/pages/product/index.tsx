@@ -1,45 +1,43 @@
 import Filters from "@/components/filters";
 import Pagination from "@/components/pagination";
 import ProductList from "@/components/product-list";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getAllProducts } from "@/services/api";
 
-const initialProducts = [
-  {
-    name: "Men's Casual Shirt",
-    price: 39.99,
-    rating: 4.2,
-    reviews: 200,
-    stock: 75,
-  },
-  { name: "Wireless Earbuds", price: 129.99, rating: 4.3, reviews: 120 },
-  { name: "Smart Home Hub", price: 199.99, rating: 4.6, reviews: 75 },
-  { name: "Smartphone X", price: 999.99, rating: 4.3, reviews: 120 },
-  { name: "Laptop Pro", price: 1499.99, rating: 4.8, reviews: 85 },
-];
 export default function Products() {
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const query = useQuery({ queryKey: ["products",currentPage], queryFn: getAllProducts });
-
-  const products = query?.data?.products;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(1);
 
 
- const handleFilter = (filters: any) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products", currentPage,totalPage], 
+    queryFn: getAllProducts,
+  });
+
+  const products = data?.products || []; 
+
+  const handleFilter = (filters: any) => {
     // Apply filters here
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
   return (
     <div>
       <Filters onFilter={handleFilter} />
-      <ProductList products={products} />
+      {isLoading ? (
+        <p>Loading products...</p>
+      ) : error ? (
+        <p>Error loading products</p>
+      ) : (
+        <ProductList products={products} />
+      )}
       <Pagination
         currentPage={currentPage}
-        totalPages={3}
+        totalPages={totalPage} 
         onPageChange={handlePageChange}
       />
     </div>

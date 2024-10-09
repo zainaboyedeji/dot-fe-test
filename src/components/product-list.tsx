@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface Product {
   name: string;
@@ -6,6 +6,7 @@ interface Product {
   rating: number;
   reviews: number;
   stock?: number;
+  quantity?: number;
 }
 
 interface ProductListProps {
@@ -13,26 +14,27 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products }: ProductListProps) {
-  const [cart, setCart] = useState([]);
-  const [cartItems, setCartItems] = useState(products); // For simplicity, reusing the products array
+  const [cartItems, setCartItems] = useState<Product[]>(
+    products?.map((product) => ({ ...product, quantity: 1 })) // Initializing cart with quantity
+  );
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const toggleCartDrawer = () => {
     setIsCartOpen(!isCartOpen);
   };
 
-  const addToCart = (product) => {
-    // setCartItems([...cartItems, product]);
+  const addToCart = (product: Product) => {
     setIsCartOpen(true);
   };
 
   const handleQuantityChange = (index: number, increment: boolean) => {
     const updatedCart = [...cartItems];
     if (increment) {
-      updatedCart[index].quantity += 1;
+      updatedCart[index].quantity! += 1; 
     } else {
-      updatedCart[index].quantity =
-        updatedCart[index].quantity > 1 ? updatedCart[index].quantity - 1 : 1;
+      updatedCart[index].quantity = updatedCart[index].quantity! > 1
+        ? updatedCart[index].quantity! - 1
+        : 1; 
     }
     setCartItems(updatedCart);
   };
@@ -43,10 +45,7 @@ export default function ProductList({ products }: ProductListProps) {
   };
 
   const calculateTotal = () => {
-    return cartItems?.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+    return cartItems?.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
   };
 
   return (
@@ -67,12 +66,11 @@ export default function ProductList({ products }: ProductListProps) {
               className="mt-4 bg-black text-white w-full py-2 rounded-full"
             >
               Add to Cart
-            </button>{" "}
+            </button>
           </div>
         ))}
       </div>
 
-      {/* Cart display */}
       <div
         className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-50 transform ${
           isCartOpen ? "translate-x-0" : "translate-x-full"

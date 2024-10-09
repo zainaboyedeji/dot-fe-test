@@ -1,8 +1,21 @@
-// pages/EditProduct.tsx
-import { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
+
+interface Product {
+  name: string;
+  brand: string;
+  category: string;
+  subCategory: string;
+  price: number;
+  stock: number;
+  description: string;
+  material: string;
+  fit: string;
+  sizes: string[];
+  care: string;
+}
 
 export default function EditProduct() {
-  const [product, setProduct] = useState({
+  const [product, setProduct] = useState<Product>({
     name: "Men's Casual Shirt",
     brand: "FashionCo",
     category: "Clothing",
@@ -16,7 +29,7 @@ export default function EditProduct() {
     care: 'Machine Washable',
   });
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
   };

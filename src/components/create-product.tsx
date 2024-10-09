@@ -1,7 +1,24 @@
-import { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
+
+interface Specification {
+  key: string;
+  value: string;
+}
+
+interface Product {
+  name: string;
+  brand: string;
+  category: string;
+  subCategory: string;
+  price: number;
+  stock: number;
+  description: string;
+  imageUrl: string;
+  specifications: Specification[];
+}
 
 export default function CreateProduct() {
-  const [product, setProduct] = useState({
+  const [product, setProduct] = useState<Product>({
     name: '',
     brand: '',
     category: '',
@@ -13,12 +30,12 @@ export default function CreateProduct() {
     specifications: [{ key: '', value: '' }],
   });
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
   };
 
-  const handleSpecificationChange = (index: number, field: string, value: string) => {
+  const handleSpecificationChange = (index: number, field: keyof Specification, value: string) => {
     const newSpecifications = [...product.specifications];
     newSpecifications[index][field] = value;
     setProduct((prevProduct) => ({ ...prevProduct, specifications: newSpecifications }));
