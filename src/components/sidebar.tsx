@@ -1,38 +1,28 @@
-// Sidebar.tsx
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import React from 'react';
 
-export const sidebarLinks = [
-  { href: "/products", title: "Products" },
-  { href: "/edit", title: "Edit Product" },
-  { href: "/create", title: "Create Product" },
-  // Add more links as needed
+const categories = [
+  { name: 'Electronics', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
+  { name: 'Clothing', subcategories: ['Men', 'Women', 'Kids'] },
+  { name: 'Home & Garden', subcategories: ['Furniture', 'Decor', 'Kitchen'] },
 ];
 
-const Sidebar = () => {
-  const router = useRouter();
-
+export default function Sidebar() {
   return (
-    <aside className="w-64 bg-gray-100 p-4">
-      <h2 className="font-bold mb-4">Categories</h2>
+    <aside className="w-64 p-6 bg-gray-100">
       <ul>
-        {sidebarLinks.map((link, index) => (
-          <li key={index} className="mb-2">
-            <Link href={link.href} legacyBehavior>
-              <a
-                className={`${
-                  router.pathname === link.href ? "text-red-500" : "text-black"
-                } font-bold`}
-              >
-                {link.title}
-              </a>
-            </Link>
+        {categories.map((category) => (
+          <li key={category.name} className="mb-6">
+            <h3 className="font-bold text-red-500">{category.name}</h3>
+            <ul>
+              {category.subcategories.map((subcategory) => (
+                <li key={subcategory} className="pl-4 text-sm text-gray-600">
+                  {subcategory}
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>
     </aside>
   );
-};
-
-export default Sidebar;
+}
