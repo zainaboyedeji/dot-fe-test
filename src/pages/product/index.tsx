@@ -1,81 +1,35 @@
+import Filters from "@/components/filters";
+import Pagination from "@/components/pagination";
 import ProductList from "@/components/product-list";
 import { useState } from "react";
-import { FaBars } from "react-icons/fa";
 
-const categories = [
-  { name: 'Electronics', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
-  { name: 'Clothing', subcategories: ['Men', 'Women', 'Kids'] },
-  { name: 'Home & Garden', subcategories: ['Furniture', 'Decor', 'Kitchen'] },
-];
-
+const initialProducts = [
+    { name: "Men's Casual Shirt", price: 39.99, rating: 4.2, reviews: 200, stock: 75 },
+    { name: 'Wireless Earbuds', price: 129.99, rating: 4.3, reviews: 120 },
+    { name: 'Smart Home Hub', price: 199.99, rating: 4.6, reviews: 75 },
+    { name: 'Smartphone X', price: 999.99, rating: 4.3, reviews: 120 },
+    { name: 'Laptop Pro', price: 1499.99, rating: 4.8, reviews: 85 },
+  ];
 export default function Products() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [currentView, setCurrentView] = useState("products");
+    const [products, setProducts] = useState(initialProducts);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const switchView = (view) => {
-    setCurrentView(view);
-  };
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const handleFilter = (filters: any) => {
+        // Apply filters here
+      };
+    
+      const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+      };
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">Test App</h1>
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={toggleSidebar}
-            className="lg:hidden flex items-center justify-center bg-black text-white p-2 rounded-full"
-          >
-            <FaBars />
-          </button>
-          {/* Cart Icon */}
-          {/* <button onClick={toggleCartDrawer} className="relative">
-            <span className="material-icons">shopping_cart</span>
-            {cartItems.length > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
-                {cartItems.length}
-              </span>
-            )}
-          </button> */}
-        </div>
-      </header>
-
-      <div className="flex">
-        {/* Sidebar */}
-        <aside
-          className={`${
-            isSidebarOpen ? "block" : "hidden"
-          } lg:block w-64 bg-gray-100 p-4 fixed inset-y-0 z-10 lg:relative lg:inset-auto lg:w-64 lg:bg-gray-100`}
-        >
-          <h2 className="font-bold mb-4">Categories</h2>
-          <ul>
-            <li className="mb-2" onClick={() => switchView("products")}>
-              <h3 className="text-red-500 font-bold">Products</h3>
-            </li>
-            <li className="mb-2" onClick={() => switchView("productDetail")}>
-              <h3 className="text-red-500 font-bold">Product Detail</h3>
-            </li>
-          </ul>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6 lg:ml-64">
-          {currentView === "products" ? (
-            <ProductList />
-          ) : (
-            <div>
-
-
-                dddd
-            </div>
-          )}
-        </main>
-      </div>
+    <div>
+      <Filters onFilter={handleFilter} />
+      <ProductList products={products} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={3}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
-
