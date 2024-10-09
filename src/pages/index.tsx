@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
-import EditProduct from "@/components/editProduct"; // Import the EditProduct component
-import CreateProduct from "@/components/createProduct"; // Import the CreateProduct component
+import EditProduct from "@/components/editProduct";
+import CreateProduct from "@/components/createProduct";
 
 const categories = [
   { name: 'Electronics', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
@@ -19,7 +19,9 @@ const products = [
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [currentView, setCurrentView] = useState("products"); // Track current view
+  const [isCartOpen, setIsCartOpen] = useState(false); // Track cart drawer state
+  const [cartItems, setCartItems] = useState([]); // Track items in the cart
+  const [currentView, setCurrentView] = useState("products");
   const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
   const [sortBy, setSortBy] = useState('Price');
@@ -33,6 +35,20 @@ export default function Home() {
     setCurrentView(view);
   };
 
+  const addToCart = (product) => {
+    setCartItems([...cartItems, product]); // Add item to the cart
+    setIsCartOpen(true); // Open cart drawer
+  };
+
+  const removeFromCart = (index) => {
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedCart);
+  };
+
+  const toggleCartDrawer = () => {
+    setIsCartOpen(!isCartOpen); // Toggle cart drawer visibility
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -44,6 +60,15 @@ export default function Home() {
             className="lg:hidden flex items-center justify-center bg-black text-white p-2 rounded-full"
           >
             <FaBars />
+          </button>
+          {/* Cart Icon */}
+          <button onClick={toggleCartDrawer} className="relative">
+            <span className="material-icons">shopping_cart</span>
+            {cartItems.length > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
+                {cartItems.length}
+              </span>
+            )}
           </button>
         </div>
       </header>
@@ -74,112 +99,82 @@ export default function Home() {
           {currentView === "products" ? (
             <div>
               <h2 className="text-2xl font-bold mb-4">All Products</h2>
-              <div>
-                <h2 className="text-2xl font-bold mb-4">All Products</h2>
 
-                {/* Filters */}
-                <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex space-x-4 items-center">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search products..."
-                    className="border rounded-lg p-2 w-full"
-                  />
-                  <div className="flex items-center space-x-2">
-                    <span>Price Range:</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="2000"
-                      value={priceRange.min}
-                      onChange={(e) =>
-                        setPriceRange({
-                          ...priceRange,
-                          min: Number(e.target.value),
-                        })
-                      }
-                      className="border rounded-lg p-2 w-20"
-                    />
-                    <span>to</span>
-                    <input
-                      type="number"
-                      min="0"
-                      max="2000"
-                      value={priceRange.max}
-                      onChange={(e) =>
-                        setPriceRange({
-                          ...priceRange,
-                          max: Number(e.target.value),
-                        })
-                      }
-                      className="border rounded-lg p-2 w-20"
-                    />
-                  </div>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="border rounded-lg p-2"
+              {/* Product Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((product, index) => (
+                  <div
+                    key={index}
+                    className="bg-white p-4 rounded-lg shadow-md"
                   >
-                    <option value="Price">Price</option>
-                    <option value="Rating">Rating</option>
-                  </select>
-                  <select
-                    value={order}
-                    onChange={(e) => setOrder(e.target.value)}
-                    className="border rounded-lg p-2"
-                  >
-                    <option value="Ascending">Ascending</option>
-                    <option value="Descending">Descending</option>
-                  </select>
-                </div>
-
-                {/* Product Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {products.map((product, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-4 rounded-lg shadow-md"
+                    <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                    <h3 className="font-bold">{product.name}</h3>
+                    <p className="text-sm text-gray-500">
+                      ★ {product.rating} ({product.reviews} reviews)
+                    </p>
+                    <p className="text-xl font-bold">
+                      ${product.price.toFixed(2)}
+                    </p>
+                    <button
+                      onClick={() => addToCart(product)}
+                      className="mt-4 bg-black text-white w-full py-2 rounded-full"
                     >
-                      <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
-                      <h3 className="font-bold">{product.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        ★ {product.rating} ({product.reviews} reviews)
-                      </p>
-                      <p className="text-xl font-bold">
-                        ${product.price.toFixed(2)}
-                      </p>
-                      <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
-                        Add to Cart
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pagination */}
-                <div className="flex justify-between items-center mt-6 flex-col lg:flex-row space-y-4 lg:space-y-0">
-                  <button className="px-4 py-2 bg-gray-300 rounded-full">
-                    Previous
-                  </button>
-                  <span>Page 1</span>
-                  <button className="px-4 py-2 bg-gray-300 rounded-full">
-                    Next
-                  </button>
-                  <select className="border rounded-lg p-2">
-                    <option value="10">10 per page</option>
-                    <option value="20">20 per page</option>
-                    <option value="50">50 per page</option>
-                  </select>
-                </div>
-              </div>{" "}
+                      Add to Cart
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : currentView === "edit" ? (
-            <EditProduct /> // Show EditProduct component
+            <EditProduct />
           ) : (
-            <CreateProduct /> // Show CreateProduct component
+            <CreateProduct />
           )}
         </main>
       </div>
+
+      {/* Cart Drawer */}
+      {/* Cart Drawer */}
+<div
+  className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-50 transform ${
+    isCartOpen ? 'translate-x-0' : 'translate-x-full'
+  } transition-transform duration-300`}
+>
+  <div className="p-4">
+    {/* Close Button */}
+    <button
+      onClick={toggleCartDrawer}
+      className="text-gray-500 hover:text-black absolute top-4 right-4 text-2xl"
+    >
+      &times;
+    </button>
+
+    <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
+
+    {cartItems.length === 0 ? (
+      <p>Your cart is empty</p>
+    ) : (
+      <ul>
+        {cartItems.map((item, index) => (
+          <li key={index} className="flex justify-between mb-2">
+            <span>{item.name}</span>
+            <span>${item.price.toFixed(2)}</span>
+            <button
+              onClick={() => removeFromCart(index)}
+              className="text-red-500"
+            >
+              &times;
+            </button>
+          </li>
+        ))}
+      </ul>
+    )}
+    <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
+      Proceed to Checkout
+    </button>
+  </div>
+</div>
+
     </div>
   );
 }
