@@ -1,4 +1,3 @@
-// pages/CreateProduct.tsx
 import { useState } from 'react';
 
 export default function CreateProduct() {
@@ -33,7 +32,6 @@ export default function CreateProduct() {
   };
 
   const handleCreateProduct = () => {
-    // Create product logic here
     console.log('Product created:', product);
   };
 

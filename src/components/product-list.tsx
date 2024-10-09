@@ -22,7 +22,7 @@ export default function ProductList({ products }: ProductListProps) {
   };
 
   const addToCart = (product) => {
-    setCartItems([...cartItems, product]);
+    // setCartItems([...cartItems, product]);
     setIsCartOpen(true);
   };
 
@@ -43,7 +43,7 @@ export default function ProductList({ products }: ProductListProps) {
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce(
+    return cartItems?.reduce(
       (total, item) => total + item.price * item.quantity,
       0
     );
@@ -54,7 +54,7 @@ export default function ProductList({ products }: ProductListProps) {
       <h2 className="text-2xl font-bold mb-4">All Products</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product, index) => (
+        {products?.map((product, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow-md">
             <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
             <h3 className="font-bold">{product.name}</h3>
@@ -87,10 +87,10 @@ export default function ProductList({ products }: ProductListProps) {
           </button>
           <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
           <p className="text-gray-500 mb-4">
-            You have {cartItems.length} items in your cart.
+            You have {cartItems?.length} items in your cart.
           </p>
           <ul className="space-y-4">
-            {cartItems.map((item, index) => (
+            {cartItems?.map((item, index) => (
               <li key={index} className="flex justify-between items-center">
                 <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
                 <div className="flex-1 ml-4">
@@ -125,7 +125,7 @@ export default function ProductList({ products }: ProductListProps) {
           </ul>
           <div className="mt-6">
             <p className="text-xl font-bold text-right">
-              Total: ${calculateTotal().toFixed(2)}
+              Total: ${calculateTotal()?.toFixed(2)}
             </p>
             <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
               Proceed to Checkout
