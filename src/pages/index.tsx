@@ -19,20 +19,47 @@ const products = [
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false); // Track cart drawer state
-  const [cartItems, setCartItems] = useState([]); // Track items in the cart
   const [currentView, setCurrentView] = useState("products");
   const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
   const [sortBy, setSortBy] = useState('Price');
   const [order, setOrder] = useState('Ascending');
+  const [cartItems, setCartItems] = useState(products);
+  const [isCartOpen, setIsCartOpen] = useState(true); // Set true for display
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const switchView = (view: string) => {
-    setCurrentView(view);
+  // Toggle cart drawer visibility
+  const toggleCartDrawer = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+
+  // Handle quantity change
+  const handleQuantityChange = (index: number, increment: boolean) => {
+    const updatedCart = [...cartItems];
+    if (increment) {
+      updatedCart[index].quantity += 1;
+    } else {
+      updatedCart[index].quantity =
+        updatedCart[index].quantity > 1 ? updatedCart[index].quantity - 1 : 1;
+    }
+    setCartItems(updatedCart);
+  };
+
+  // Handle item removal
+  const removeFromCart = (index: number) => {
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedCart);
+  };
+
+  // Calculate total cost
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   };
 
   const addToCart = (product) => {
@@ -40,14 +67,7 @@ export default function Home() {
     setIsCartOpen(true); // Open cart drawer
   };
 
-  const removeFromCart = (index) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(updatedCart);
-  };
 
-  const toggleCartDrawer = () => {
-    setIsCartOpen(!isCartOpen); // Toggle cart drawer visibility
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -132,49 +152,84 @@ export default function Home() {
           )}
         </main>
       </div>
-
+      <>
       {/* Cart Drawer */}
-      {/* Cart Drawer */}
-<div
-  className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-50 transform ${
-    isCartOpen ? 'translate-x-0' : 'translate-x-full'
-  } transition-transform duration-300`}
->
-  <div className="p-4">
-    {/* Close Button */}
-    <button
-      onClick={toggleCartDrawer}
-      className="text-gray-500 hover:text-black absolute top-4 right-4 text-2xl"
-    >
-      &times;
-    </button>
+      <div
+        className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-50 transform ${
+          isCartOpen ? 'translate-x-0' : 'translate-x-full'
+        } transition-transform duration-300`}
+      >
+        <div className="p-4">
+          {/* Close Button */}
+          <button
+            onClick={toggleCartDrawer}
+            className="text-gray-500 hover:text-black absolute top-4 right-4 text-2xl"
+          >
+            &times;
+          </button>
 
-    <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
+          {/* Cart Header */}
+          <h2 className="text-xl font-bold mb-4">
+            Shopping Cart
+          </h2>
+          <p className="text-gray-500 mb-4">
+            You have {cartItems.length} items in your cart.
+          </p>
 
-    {cartItems.length === 0 ? (
-      <p>Your cart is empty</p>
-    ) : (
-      <ul>
-        {cartItems.map((item, index) => (
-          <li key={index} className="flex justify-between mb-2">
-            <span>{item.name}</span>
-            <span>${item.price.toFixed(2)}</span>
-            <button
-              onClick={() => removeFromCart(index)}
-              className="text-red-500"
-            >
-              &times;
+          {/* Cart Items */}
+          <ul className="space-y-4">
+            {cartItems.map((item, index) => (
+              <li key={index} className="flex justify-between items-center">
+                {/* Item Image Placeholder */}
+                <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
+
+                <div className="flex-1 ml-4">
+                  <h3 className="font-bold">{item.name}</h3>
+                  <p className="text-sm text-gray-500">${item.price.toFixed(2)} each</p>
+                </div>
+
+                {/* Quantity Control */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => handleQuantityChange(index, false)}
+                    className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
+                  >
+                    -
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button
+                    onClick={() => handleQuantityChange(index, true)}
+                    className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Remove Button */}
+                <button
+                  onClick={() => removeFromCart(index)}
+                  className="text-red-500 ml-2"
+                >
+                  &times;
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          {/* Total */}
+          <div className="mt-6">
+            <p className="text-xl font-bold text-right">
+              Total: ${calculateTotal().toFixed(2)}
+            </p>
+
+            {/* Checkout Button */}
+            <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
+              Proceed to Checkout
             </button>
-          </li>
-        ))}
-      </ul>
-    )}
-    <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
-      Proceed to Checkout
-    </button>
-  </div>
-</div>
-
+          </div>
+        </div>
+      </div>
+    </>
     </div>
   );
 }
