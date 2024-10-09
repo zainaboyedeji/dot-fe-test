@@ -1,115 +1,185 @@
-import Image from "next/image";
-import localFont from "next/font/local";
+import { useState } from "react";
+import { FaBars } from "react-icons/fa";
+import EditProduct from "@/components/editProduct"; // Import the EditProduct component
+import CreateProduct from "@/components/createProduct"; // Import the CreateProduct component
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const categories = [
+  { name: 'Electronics', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
+  { name: 'Clothing', subcategories: ['Men', 'Women', 'Kids'] },
+  { name: 'Home & Garden', subcategories: ['Furniture', 'Decor', 'Kitchen'] },
+];
+
+const products = [
+  { name: "Men's Casual Shirt", price: 39.99, rating: 4.2, reviews: 200 },
+  { name: 'Wireless Earbuds', price: 129.99, rating: 4.3, reviews: 120 },
+  { name: 'Smart Home Hub', price: 199.99, rating: 4.6, reviews: 75 },
+  { name: 'Smartphone X', price: 999.99, rating: 4.3, reviews: 120 },
+  { name: 'Laptop Pro', price: 1499.99, rating: 4.8, reviews: 85 },
+];
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentView, setCurrentView] = useState("products"); // Track current view
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
+  const [sortBy, setSortBy] = useState('Price');
+  const [order, setOrder] = useState('Ascending');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const switchView = (view: string) => {
+    setCurrentView(view);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-md p-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold">Test App</h1>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={toggleSidebar}
+            className="lg:hidden flex items-center justify-center bg-black text-white p-2 rounded-full"
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <FaBars />
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      </header>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <aside
+          className={`${
+            isSidebarOpen ? "block" : "hidden"
+          } lg:block w-64 bg-gray-100 p-4 fixed inset-y-0 z-10 lg:relative lg:inset-auto lg:w-64 lg:bg-gray-100`}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <h2 className="font-bold mb-4">Categories</h2>
+          <ul>
+            <li className="mb-2" onClick={() => switchView("products")}>
+              <h3 className="text-red-500 font-bold">Products</h3>
+            </li>
+            <li className="mb-2" onClick={() => switchView("edit")}>
+              <h3 className="text-red-500 font-bold">Edit Product</h3>
+            </li>
+            <li className="mb-2" onClick={() => switchView("create")}>
+              <h3 className="text-red-500 font-bold">Create Product</h3>
+            </li>
+          </ul>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-6 lg:ml-64">
+          {currentView === "products" ? (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">All Products</h2>
+              <div>
+                <h2 className="text-2xl font-bold mb-4">All Products</h2>
+
+                {/* Filters */}
+                <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex space-x-4 items-center">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search products..."
+                    className="border rounded-lg p-2 w-full"
+                  />
+                  <div className="flex items-center space-x-2">
+                    <span>Price Range:</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="2000"
+                      value={priceRange.min}
+                      onChange={(e) =>
+                        setPriceRange({
+                          ...priceRange,
+                          min: Number(e.target.value),
+                        })
+                      }
+                      className="border rounded-lg p-2 w-20"
+                    />
+                    <span>to</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="2000"
+                      value={priceRange.max}
+                      onChange={(e) =>
+                        setPriceRange({
+                          ...priceRange,
+                          max: Number(e.target.value),
+                        })
+                      }
+                      className="border rounded-lg p-2 w-20"
+                    />
+                  </div>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="border rounded-lg p-2"
+                  >
+                    <option value="Price">Price</option>
+                    <option value="Rating">Rating</option>
+                  </select>
+                  <select
+                    value={order}
+                    onChange={(e) => setOrder(e.target.value)}
+                    className="border rounded-lg p-2"
+                  >
+                    <option value="Ascending">Ascending</option>
+                    <option value="Descending">Descending</option>
+                  </select>
+                </div>
+
+                {/* Product Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {products.map((product, index) => (
+                    <div
+                      key={index}
+                      className="bg-white p-4 rounded-lg shadow-md"
+                    >
+                      <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+                      <h3 className="font-bold">{product.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        ★ {product.rating} ({product.reviews} reviews)
+                      </p>
+                      <p className="text-xl font-bold">
+                        ${product.price.toFixed(2)}
+                      </p>
+                      <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
+                        Add to Cart
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-between items-center mt-6 flex-col lg:flex-row space-y-4 lg:space-y-0">
+                  <button className="px-4 py-2 bg-gray-300 rounded-full">
+                    Previous
+                  </button>
+                  <span>Page 1</span>
+                  <button className="px-4 py-2 bg-gray-300 rounded-full">
+                    Next
+                  </button>
+                  <select className="border rounded-lg p-2">
+                    <option value="10">10 per page</option>
+                    <option value="20">20 per page</option>
+                    <option value="50">50 per page</option>
+                  </select>
+                </div>
+              </div>{" "}
+            </div>
+          ) : currentView === "edit" ? (
+            <EditProduct /> // Show EditProduct component
+          ) : (
+            <CreateProduct /> // Show CreateProduct component
+          )}
+        </main>
+      </div>
     </div>
   );
 }

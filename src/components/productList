@@ -1,0 +1,114 @@
+import { useState } from 'react';
+
+interface Product {
+  name: string;
+  price: number;
+  rating: number;
+  reviews: number;
+}
+
+interface ProductListProps {
+  products: Product[];
+}
+
+const ProductList: React.FC<ProductListProps> = ({ products }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
+  const [sortBy, setSortBy] = useState('Price');
+  const [order, setOrder] = useState('Ascending');
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handlePriceChange = (type: 'min' | 'max', value: number) => {
+    setPriceRange((prev) => ({
+      ...prev,
+      [type]: value,
+    }));
+  };
+
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-4">All Products</h2>
+
+      {/* Filters */}
+      <div className="bg-white p-4 rounded-lg shadow-md mb-4 flex space-x-4 items-center">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearch}
+          placeholder="Search products..."
+          className="border rounded-lg p-2 w-full"
+        />
+        <div className="flex items-center space-x-2">
+          <span>Price Range:</span>
+          <input
+            type="number"
+            min="0"
+            max="2000"
+            value={priceRange.min}
+            onChange={(e) => handlePriceChange('min', Number(e.target.value))}
+            className="border rounded-lg p-2 w-20"
+          />
+          <span>to</span>
+          <input
+            type="number"
+            min="0"
+            max="2000"
+            value={priceRange.max}
+            onChange={(e) => handlePriceChange('max', Number(e.target.value))}
+            className="border rounded-lg p-2 w-20"
+          />
+        </div>
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+          className="border rounded-lg p-2"
+        >
+          <option value="Price">Price</option>
+          <option value="Rating">Rating</option>
+        </select>
+        <select
+          value={order}
+          onChange={(e) => setOrder(e.target.value)}
+          className="border rounded-lg p-2"
+        >
+          <option value="Ascending">Ascending</option>
+          <option value="Descending">Descending</option>
+        </select>
+      </div>
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product, index) => (
+          <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+            <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+            <h3 className="font-bold">{product.name}</h3>
+            <p className="text-sm text-gray-500">
+              ★ {product.rating} ({product.reviews} reviews)
+            </p>
+            <p className="text-xl font-bold">${product.price.toFixed(2)}</p>
+            <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-6 flex-col lg:flex-row space-y-4 lg:space-y-0">
+        <button className="px-4 py-2 bg-gray-300 rounded-full">Previous</button>
+        <span>Page 1</span>
+        <button className="px-4 py-2 bg-gray-300 rounded-full">Next</button>
+        <select className="border rounded-lg p-2">
+          <option value="10">10 per page</option>
+          <option value="20">20 per page</option>
+          <option value="50">50 per page</option>
+        </select>
+      </div>
+    </div>
+  );
+};
+
+export default ProductList;
