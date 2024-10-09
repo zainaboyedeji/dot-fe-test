@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Sidebar from "@/components/sidebar";
 import Products from "@/pages/product";
+import Navbar from "@/components/navbar";
 
 export default function Home() {
   const [selectedComponent, setSelectedComponent] = useState("Electronics");
@@ -26,7 +27,10 @@ export default function Home() {
   return (
     <div className="flex">
       <Sidebar setSelectedComponent={setSelectedComponent} />
-      <main className="flex-1 p-6 bg-gray-50">{renderComponent()}</main>
+      <main className="flex-1 p-6 bg-gray-50">
+        <Navbar />
+        <> {renderComponent()}</>
+      </main>
     </div>
   );
 }
