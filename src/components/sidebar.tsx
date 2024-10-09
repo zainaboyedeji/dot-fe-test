@@ -1,10 +1,10 @@
-// Sidebar.tsx
 import React from 'react';
+import { useRouter } from 'next/router';
 
 const categories = [
-  { name: 'Products', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
+  { name: 'Product', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
   { name: 'Clothing', subcategories: ['Men', 'Women', 'Kids'] },
-  { name: 'Home & Garden', subcategories: ['Furniture', 'Decor', 'Kitchen'] },
+  { name: 'Category', subcategories: ['Furniture', 'Decor', 'Kitchen'] },
 ];
 
 interface SidebarProps {
@@ -12,6 +12,13 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ setSelectedComponent }: SidebarProps) {
+  const router = useRouter();
+
+  const handleCategoryClick = (categoryName: string) => {
+    setSelectedComponent(categoryName);
+    router.push(`/${categoryName.toLowerCase().replace(/\s+/g, '-')}`); 
+  };
+
   return (
     <aside className="w-64 p-6 bg-gray-100">
       <ul>
@@ -19,7 +26,7 @@ export default function Sidebar({ setSelectedComponent }: SidebarProps) {
           <li key={category.name} className="mb-6">
             <h3
               className="font-bold text-red-500 cursor-pointer"
-              onClick={() => setSelectedComponent(category.name)}
+              onClick={() => handleCategoryClick(category.name)}
             >
               {category.name}
             </h3>
