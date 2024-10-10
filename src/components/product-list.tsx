@@ -6,6 +6,7 @@ import Button from "./button";
 import Image from "next/image";
 
 interface Product {
+  id:number;
   name: string;
   brand: string;
   category: string;

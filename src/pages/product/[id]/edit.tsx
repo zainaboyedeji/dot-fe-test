@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import Button from "@/components/button";
 
 interface Product {
+  id: number;
   name: string;
   brand: string;
   category: string;

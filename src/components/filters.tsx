@@ -15,7 +15,7 @@ export default function Filters({ onFilter }: FiltersProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(2000);
+  const [maxPrice, setMaxPrice] = useState(6000);
   const [order, setOrder] = useState("asc");
 
   const handleFilter = () => {

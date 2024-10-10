@@ -56,7 +56,7 @@ export default function CreateProduct() {
       notifySuccess("Product Created Successfully");
       router.push("/");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       notifyError(error.message);
     },
   });

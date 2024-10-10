@@ -8,30 +8,37 @@ import { getAllProducts } from "@/services/api";
 import WebPageTitle from "@/components/webpage-title";
 
 export default function Products() {
+  const [filter, setFilter] = useState({minPrice:0,maxPrice:6000,order:"",search:""});
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPage] = useState<number>(1);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products", currentPage],
+    queryKey: [
+      "products",
+      currentPage,
+      filter.minPrice,
+      filter.maxPrice,
+      filter.order,
+      filter.search,
+    ],
     queryFn: getAllProducts,
   });
 
   const products = data?.products || [];
 
-  const handleFilter = (filters: any) => {
-console.log("filter",filters)  };
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  console.log(filter, "filters");
 
   return (
     <>
       <WebPageTitle title="Products | DOT FE TEST" />
       <div>
-        <Filters onFilter={handleFilter} />
+        <Filters onFilter={setFilter} />
         {isLoading ? (
-          <CardSkeleton />  
+          <CardSkeleton />
         ) : error ? (
           <p>Error loading products</p>
         ) : (

@@ -1,3 +1,4 @@
+import { Product } from "@/models/product";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface CartItem {
@@ -9,10 +10,10 @@ interface CartItem {
 
 interface CartContextType {
   cartItems: CartItem[];
-  setCartItems: React.Dispatch<React.SetStateAction<Product[]>>;
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
   isCartOpen: boolean;
   toggleCartDrawer: () => void;
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: Product) => void;
   removeFromCart: (index: number) => void;
   handleQuantityChange: (index: number, increment: boolean) => void;
   calculateTotal: () => number;
@@ -28,7 +29,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsCartOpen((prev) => !prev);
   };
 
-  const addToCart = (item: CartItem) => {
+  const addToCart = (item: Product) => {
     const existingItemIndex = cartItems.findIndex((cartItem) => cartItem.id === item.id);
 
     if (existingItemIndex !== -1) {

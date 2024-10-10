@@ -1,5 +1,5 @@
 export class CustomHttpError extends Error {
-  public payload: any;
+  public payload: unknown;
   public responseCode?: number;
   public statusCode: number;
   public responseText?: string;
@@ -7,7 +7,7 @@ export class CustomHttpError extends Error {
     message: string,
     extras: {
       statusCode: number;
-      payload?: any;
+      payload?: unknown;
       responseCode?: number;
       responseText?: string;
     }

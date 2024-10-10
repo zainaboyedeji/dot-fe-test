@@ -18,17 +18,22 @@ export async function getAllCategories() {
 export async function getAllProducts({
   queryKey,
 }: {
-  queryKey: [string, number];
+  queryKey: [string, number, number, number, string, string];
 }) {
   try {
-    const [_, page] = queryKey;
+    const [_, page, minPrice, maxPrice, order, search] = queryKey;
     const response = await api.get(
       `${apiEndpoints.products.GET_ALL_PRODUCTS}`,
       {
-        params: { page },
+        params: { page, minPrice, maxPrice, order, search },
       }
     );
-    return response;
+    return response as unknown as {
+      products: Product[];
+      totalPages: number;
+      currentPage: number;
+      totalProducts: number;
+    };
   } catch (error) {
     throw error;
   }
