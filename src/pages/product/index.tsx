@@ -30,8 +30,6 @@ export default function Products() {
     setCurrentPage(page);
   };
 
-  console.log(filter, "filters");
-
   return (
     <>
       <WebPageTitle title="Products | DOT FE TEST" />
