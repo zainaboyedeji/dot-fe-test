@@ -1,8 +1,9 @@
+// src/pages/product/[id].tsx
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getProduct, deleteProduct } from '@/services/api';
 import Link from 'next/link';
-import { FaArrowLeft } from 'react-icons/fa6';
+import { FaArrowLeft } from 'react-icons/fa';
 import { notifyError, notifySuccess } from '@/util/utils';
 import WebPageTitle from '@/components/webpage-title';
 import { useCart } from '@/context/cart-context';
@@ -61,7 +62,6 @@ export default function ProductDetail() {
       setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
 
-    toggleCartDrawer(); // Open the cart drawer after adding the product
   };
 
   if (isLoading) return <p>Loading...</p>;

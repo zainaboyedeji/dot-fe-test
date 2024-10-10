@@ -9,6 +9,7 @@ interface CartItem {
 
 interface CartContextType {
   cartItems: CartItem[];
+  setCartItems: React.Dispatch<React.SetStateAction<Product[]>>;
   isCartOpen: boolean;
   toggleCartDrawer: () => void;
   addToCart: (item: CartItem) => void;
@@ -63,6 +64,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider
       value={{
         cartItems,
+        setCartItems,
         isCartOpen,
         toggleCartDrawer,
         addToCart,
