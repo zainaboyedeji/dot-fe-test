@@ -37,7 +37,6 @@ export default function ProductDetail() {
       return Promise.reject("No product data");
     },
     onSuccess: () => {
-      console.log("Product deleted successfully!");
       router.push("/product");
     },
     onError: (error) => {

@@ -83,7 +83,6 @@ export default function EditProduct() {
       console.error("Error updating product:", error);
     },
     onSuccess: () => {
-      console.log("Product updated successfully!");
       router.push("/product");
     },
   });

@@ -27,8 +27,6 @@ export default function Layout({ children }: LayoutProps) {
     }
   };
 
-  console.log(selectedComponent)
-
   return (
     <div className="flex">
       <aside
