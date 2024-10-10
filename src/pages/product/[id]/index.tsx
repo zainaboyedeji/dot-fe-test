@@ -1,9 +1,11 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { getProduct, deleteProduct } from "@/services/api";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa6";
 
 interface Product {
-  id: number; 
+  id: number;
   name: string;
   category: string;
   price: number;
@@ -23,23 +25,26 @@ export default function ProductDetail() {
       if (!id) return Promise.reject("No ID");
       return getProduct(id as string);
     },
-    enabled: !!id, 
+    enabled: !!id,
   });
 
   const mutation = useMutation({
     mutationFn: () => {
       if (data) {
-        return deleteProduct(data.id); 
+        return deleteProduct(data.id);
       }
       return Promise.reject("No product data");
     },
     onSuccess: () => {
       console.log("Product deleted successfully!");
-      router.push("/product"); 
+      router.push("/product");
     },
     onError: (error) => {
       console.error("Error deleting product:", error);
-      alert('Failed to delete the product: ' + (error.response?.data?.message || error.message));
+      alert(
+        "Failed to delete the product: " +
+          (error.response?.data?.message || error.message)
+      );
     },
   });
 
@@ -51,9 +56,12 @@ export default function ProductDetail() {
 
   return (
     <div>
-      <a href="/products" className="text-blue-500">
-        ← Back to Products
-      </a>
+      <Link href="/" legacyBehavior>
+        <div className="flex">
+          <FaArrowLeft className="mr-2 mt-1" />
+          Back to products
+        </div>
+      </Link>
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         <div className="flex flex-col lg:flex-row">
           <div className="bg-gray-200 w-full lg:w-1/2 h-64 rounded-lg">
@@ -75,17 +83,15 @@ export default function ProductDetail() {
             <p className="text-yellow-500 mb-2">
               ★ {product.rating} ({product.reviews} reviews)
             </p>
-            <div className="text-gray-600 mb-4">
-              <p>Material: Cotton</p>
-              <p>Fit: Regular</p>
-              <p>Sizes: S, M, L, XL</p>
-              <p>Care: Machine Washable</p>
-            </div>
+
             <div className="flex space-x-4">
               <button className="bg-black text-white py-2 px-4 rounded-lg">
                 Add to Cart
               </button>
-              <button className="bg-blue-500 text-white py-2 px-4 rounded-lg">
+              <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                onClick={() => router.push(`/product/${product.id}/edit`)}
+              >
                 Edit Product
               </button>
               <button

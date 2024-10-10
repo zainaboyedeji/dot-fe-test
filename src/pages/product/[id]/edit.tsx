@@ -1,6 +1,10 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { updateProduct } from "@/services/api";
+import { useRouter } from "next/router";
 
 interface Product {
+  id: number;
   name: string;
   brand: string;
   category: string;
@@ -15,33 +19,71 @@ interface Product {
 }
 
 export default function EditProduct() {
+  const router = useRouter();
+  const { id } = router.query;
   const [product, setProduct] = useState<Product>({
+    id: id,
     name: "Men's Casual Shirt",
     brand: "FashionCo",
     category: "Clothing",
     subCategory: "Men",
     price: 39.99,
     stock: 75,
-    description: 'Comfortable and stylish casual shirt for men.',
-    material: 'Cotton',
-    fit: 'Regular',
-    sizes: ['S', 'M', 'L', 'XL'],
-    care: 'Machine Washable',
+    description: "Comfortable and stylish casual shirt for men.",
+    material: "Cotton",
+    fit: "Regular",
+    sizes: ["S", "M", "L", "XL"],
+    care: "Machine Washable",
   });
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const [errors, setErrors] = useState<{ price?: string; stock?: string }>({});
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
+
+    const newValue =
+      name === "price" || name === "stock" ? Number(value) : value;
+
+    setProduct((prevProduct) => ({ ...prevProduct, [name]: newValue }));
   };
 
-  const handleSizeChange = (index: number, newSize: string) => {
-    const newSizes = [...product.sizes];
-    newSizes[index] = newSize;
-    setProduct((prevProduct) => ({ ...prevProduct, sizes: newSizes }));
+  const validateInputs = () => {
+    const newErrors: { price?: string; stock?: string } = {};
+
+    if (product.price <= 0) {
+      newErrors.price = "Price must be a positive number";
+    }
+    if (product.stock < 0 || !Number.isInteger(product.stock)) {
+      newErrors.stock = "Stock must be a non-negative integer";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      if (validateInputs()) {
+        await updateProduct(product);
+      }
+    },
+    onError: (error) => {
+      console.error("Error updating product:", error);
+      alert(
+        "Failed to update the product: " +
+          (error.response?.data?.message || error.message)
+      );
+    },
+    onSuccess: () => {
+      console.log("Product updated successfully!");
+      // Optionally navigate or update state to reflect changes
+    },
+  });
 
   const handleUpdateProduct = () => {
-    console.log('Product updated:', product);
+    mutation.mutate();
   };
 
   return (
@@ -97,6 +139,7 @@ export default function EditProduct() {
             onChange={handleInputChange}
             className="border rounded-lg p-2 w-full"
           />
+          {errors.price && <p className="text-red-500">{errors.price}</p>}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Stock</label>
@@ -107,6 +150,7 @@ export default function EditProduct() {
             onChange={handleInputChange}
             className="border rounded-lg p-2 w-full"
           />
+          {errors.stock && <p className="text-red-500">{errors.stock}</p>}
         </div>
       </div>
       <div>
