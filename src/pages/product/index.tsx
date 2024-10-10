@@ -12,15 +12,14 @@ export default function Products() {
   const [totalPages, setTotalPage] = useState<number>(1);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products", currentPage, totalPages],
+    queryKey: ["products", currentPage],
     queryFn: getAllProducts,
   });
 
   const products = data?.products || [];
 
   const handleFilter = (filters: any) => {
-    // Apply filters here
-  };
+console.log("filter",filters)  };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

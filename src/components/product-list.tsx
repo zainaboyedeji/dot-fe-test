@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useCart } from "@/context/cart-context";
 import { FiX } from "react-icons/fi";
 import Button from "./button";
+import Image from "next/image";
 
 interface Product {
   name: string;
@@ -40,7 +41,15 @@ export default function ProductList({ products }: ProductListProps) {
         {products?.map((product, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow-md">
             <div onClick={() => router.push(`/product/${product.id}`)}>
-              <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+              <div className="relative h-40 bg-gray-200 rounded-lg mb-4">
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-lg"
+                />
+              </div>
               <h3 className="font-bold">{product.name}</h3>
               <p className="text-sm text-gray-500">
                 ★ {product.rating} ({product.reviews} reviews)
