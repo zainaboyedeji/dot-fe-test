@@ -4,6 +4,7 @@ import ProductList from "@/components/product-list";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getAllProducts } from "@/services/api";
+import WebPageTitle from "@/components/webpage-title";
 
 export default function Products() {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -25,20 +26,23 @@ export default function Products() {
   };
 
   return (
-    <div>
-      <Filters onFilter={handleFilter} />
-      {isLoading ? (
-        <p>Loading products...</p>
-      ) : error ? (
-        <p>Error loading products</p>
-      ) : (
-        <ProductList products={products} />
-      )}
-      <Pagination
-        currentPage={data?.currentPage}
-        totalPages={data?.totalPages}
-        onPageChange={handlePageChange}
-      />
-    </div>
+    <>
+      <WebPageTitle title="Products | DOT FE TEST" />
+      <div>
+        <Filters onFilter={handleFilter} />
+        {isLoading ? (
+          <p>Loading products...</p>
+        ) : error ? (
+          <p>Error loading products</p>
+        ) : (
+          <ProductList products={products} />
+        )}
+        <Pagination
+          currentPage={data?.currentPage}
+          totalPages={data?.totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+    </>
   );
 }

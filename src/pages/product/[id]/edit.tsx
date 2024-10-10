@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { updateProduct } from "@/services/api";
 import { notifyError, notifySuccess } from "@/util/utils";
 import { FaArrowLeft } from "react-icons/fa6";
+import WebPageTitle from "@/components/webpage-title";
 
 interface Product {
   id: number;
@@ -97,6 +98,8 @@ export default function EditProduct() {
 
   return (
     <>
+      <WebPageTitle title="Edit Product | DOT FE TEST" />
+
       <div
         className="flex cursor-pointer"
         onClick={() => router.push("/product")}

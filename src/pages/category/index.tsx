@@ -1,3 +1,10 @@
+import WebPageTitle from "@/components/webpage-title";
+
 export default function Category() {
-  return <div>Category</div>;
+  return (
+    <>
+      <WebPageTitle title="Category | DOT FE TEST" />
+      <div>Category</div>
+    </>
+  );
 }
