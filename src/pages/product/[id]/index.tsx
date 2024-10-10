@@ -50,6 +50,11 @@ export default function ProductDetail() {
 
   const product: Product = data;
 
+  const handleEdit = () => {
+    localStorage.setItem("editProduct", JSON.stringify(product));
+    router.push(`/product/${product.id}/edit`);
+  };
+
   return (
     <div>
       <Link href="/" legacyBehavior>
@@ -80,22 +85,7 @@ export default function ProductDetail() {
               </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={() =>
-                  router.push({
-                    pathname: `/product/${product.id}/edit`,
-                    query: {
-                      name: product.name,
-                      brand: product.brand,
-                      category: product.category,
-                      price: product.price,
-                      stock: product.stock,
-                      description: product.description,
-                      rating: product.rating,
-                      reviews: product.reviews,
-                      imageUrl: product.imageUrl,
-                    },
-                  })
-                }
+                onClick={handleEdit}
               >
                 Edit Product
               </button>

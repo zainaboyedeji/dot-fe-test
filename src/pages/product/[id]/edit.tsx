@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
 import { updateProduct } from "@/services/api";
 import { notifyError, notifySuccess } from "@/util/utils";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -21,53 +21,32 @@ interface Product {
 
 export default function EditProduct() {
   const router = useRouter();
-  const {
-    id,
-    name,
-    brand,
-    category,
-    subCategory,
-    price,
-    stock,
-    description,
-    reviews,
-    rating,
-    imageUrl,
-  } = router.query;
-
-  const [product, setProduct] = useState<Product>({
-    id: Number(id) || 0,
-    name: (name as string) || "",
-    brand: (brand as string) || "",
-    category: (category as string) || "",
-    subCategory: (subCategory as string) || "",
-    price: Number(price) || 0,
-    stock: Number(stock) || 0,
-    description: (description as string) || "",
-    reviews: (reviews as string) || "",
-    rating: (rating as string) || "",
-    imageUrl: (imageUrl as string) || "",
-  });
-
+  const [product, setProduct] = useState<Product | null>(null);
   const [errors, setErrors] = useState<{ price?: string; stock?: string }>({});
 
+  useEffect(() => {
+    const storedProduct = localStorage.getItem("editProduct");
+    if (storedProduct) {
+      setProduct(JSON.parse(storedProduct));
+    }
+  }, []);
+
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setProduct((prev) => ({
-      ...prev,
+      ...prev!,
       [name]: name === "price" || name === "stock" ? Number(value) : value,
     }));
   };
 
   const validateInputs = () => {
     const newErrors: { price?: string; stock?: string } = {};
-
-    if (product.price <= 0) {
+    if (product && product.price <= 0) {
       newErrors.price = "Price must be a positive number";
     }
-    if (product.stock < 0 || !Number.isInteger(product.stock)) {
+    if (product && (product.stock < 0 || !Number.isInteger(product.stock))) {
       newErrors.stock = "Stock must be a non-negative integer";
     }
 
@@ -77,7 +56,7 @@ export default function EditProduct() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (validateInputs()) {
+      if (validateInputs() && product) {
         await updateProduct(product);
       }
     },
@@ -93,6 +72,8 @@ export default function EditProduct() {
   const handleUpdateProduct = () => {
     mutation.mutate();
   };
+
+  if (!product) return <p>Loading...</p>;
 
   return (
     <>
@@ -172,15 +153,17 @@ export default function EditProduct() {
             name="description"
             value={product.description}
             onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full h-24"
-          ></textarea>
+            className="border rounded-lg p-2 w-full h-32"
+          />
         </div>
-        <button
-          onClick={handleUpdateProduct}
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
-        >
-          Update Product
-        </button>
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={handleUpdateProduct}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+          >
+            Update Product
+          </button>
+        </div>
       </div>
     </>
   );

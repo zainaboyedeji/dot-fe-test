@@ -2,6 +2,7 @@ import { createProduct } from "@/services/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
+import { notifyError, notifySuccess } from "@/util/utils";
 
 interface Product {
   name: string;
@@ -49,6 +50,7 @@ export default function CreateProduct() {
     mutationFn: createProduct,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
+      notifySuccess("Product Created Successfully");
       router.push("/");
       setProduct({
         name: "",
@@ -62,11 +64,7 @@ export default function CreateProduct() {
       });
     },
     onError: (error: unknown) => {
-      if (error instanceof Error) {
-        console.error("Error creating product:", error.message);
-      } else {
-        console.error("Unexpected error:", error);
-      }
+      notifyError(error.message);
     },
   });
 
