@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
+import { useCart } from "@/context/cart-context";
+import { FiX } from "react-icons/fi";
 
 interface Product {
   name: string;
@@ -17,53 +19,15 @@ interface ProductListProps {
 
 export default function ProductList({ products }: ProductListProps) {
   const router = useRouter();
-
-  const [cartItems, setCartItems] = useState<Product[]>(
-    products?.map((product) => ({ ...product, quantity: 1 }))
-  );
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  const toggleCartDrawer = () => {
-    setIsCartOpen(!isCartOpen);
-  };
-
-  const addToCart = (product: Product) => {
-    const existingProductIndex = cartItems.findIndex(
-      (item) => item.id === product.id
-    );
-
-    if (existingProductIndex !== -1) {
-      const updatedCart = [...cartItems];
-      updatedCart[existingProductIndex].quantity! += 1;
-      setCartItems(updatedCart);
-    } else {
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
-    setIsCartOpen(true);
-  };
-
-  const handleQuantityChange = (index: number, increment: boolean) => {
-    const updatedCart = [...cartItems];
-    if (increment) {
-      updatedCart[index].quantity! += 1;
-    } else {
-      updatedCart[index].quantity =
-        updatedCart[index].quantity! > 1 ? updatedCart[index].quantity! - 1 : 1;
-    }
-    setCartItems(updatedCart);
-  };
-
-  const removeFromCart = (index: number) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(updatedCart);
-  };
-
-  const calculateTotal = () => {
-    return cartItems?.reduce(
-      (total, item) => total + item.price * (item.quantity || 1),
-      0
-    );
-  };
+  const {
+    cartItems,
+    isCartOpen,
+    toggleCartDrawer,
+    handleQuantityChange,
+    removeFromCart,
+    calculateTotal,
+    addToCart,
+  } = useCart();
 
   return (
     <div>
@@ -95,58 +59,73 @@ export default function ProductList({ products }: ProductListProps) {
         } transition-transform duration-300`}
       >
         <div className="p-4">
+          {/* Close Cart Drawer Button */}
           <button
             onClick={toggleCartDrawer}
             className="text-gray-500 hover:text-black absolute top-4 right-4 text-2xl"
           >
-            &times;
+            <FiX />
           </button>
+
           <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
-          <p className="text-gray-500 mb-4">
-            You have {cartItems?.length} items in your cart.
-          </p>
-          <ul className="space-y-4">
-            {cartItems?.map((item, index) => (
-              <li key={index} className="flex justify-between items-center">
-                <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
-                <div className="flex-1 ml-4">
-                  <h3 className="font-bold">{item.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    ${item.price.toFixed(2)} each
-                  </p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleQuantityChange(index, false)}
-                    className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
-                  >
-                    -
-                  </button>
-                  <span>{item.quantity || 1}</span>
-                  <button
-                    onClick={() => handleQuantityChange(index, true)}
-                    className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
-                  >
-                    +
-                  </button>
-                </div>
-                <button
-                  onClick={() => removeFromCart(index)}
-                  className="text-red-500 ml-2"
-                >
-                  &times;
+
+          {/* Cart Items */}
+          {cartItems.length > 0 ? (
+            <>
+              <p className="text-gray-500 mb-4">
+                You have {cartItems.length} items in your cart.
+              </p>
+              <ul className="space-y-4">
+                {cartItems.map((item, index) => (
+                  <li key={index} className="flex justify-between items-center">
+                    <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
+                    <div className="flex-1 ml-4">
+                      <h3 className="font-bold">{item.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        ${item.price.toFixed(2)} each
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {/* Decrease quantity */}
+                      <button
+                        onClick={() => handleQuantityChange(index, false)}
+                        className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
+                      >
+                        -
+                      </button>
+                      <span>{item.quantity || 1}</span>
+                      {/* Increase quantity */}
+                      <button
+                        onClick={() => handleQuantityChange(index, true)}
+                        className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                    {/* Remove from cart */}
+                    <button
+                      onClick={() => removeFromCart(index)}
+                      className="text-red-500 ml-2"
+                    >
+                      &times;
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Cart Total */}
+              <div className="mt-6">
+                <p className="text-xl font-bold text-right">
+                  Total: ${calculateTotal().toFixed(2)}
+                </p>
+                <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
+                  Proceed to Checkout
                 </button>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6">
-            <p className="text-xl font-bold text-right">
-              Total: ${calculateTotal()?.toFixed(2)}
-            </p>
-            <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
-              Proceed to Checkout
-            </button>
-          </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500">Your cart is empty.</p>
+          )}
         </div>
       </div>
     </div>
