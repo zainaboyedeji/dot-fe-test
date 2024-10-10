@@ -2,16 +2,27 @@ import { getProduct } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  rating: number;
+  reviews: number;
+  imageUrl: string;
+}
+
 export default function ProductDetail() {
-  const id =
+  const id: string =
     typeof window !== "undefined"
-      ? window.location.pathname.split("/").pop()
+      ? window.location.pathname.split("/").pop() || ""
       : "";
 
-  console.log(id, "id");
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Product, Error>({
     queryKey: ["product", id],
-    queryFn: () => getProduct(id),
+    queryFn: () => getProduct(id), 
+    enabled: !!id, 
   });
 
   console.log(id, "id");
@@ -19,7 +30,9 @@ export default function ProductDetail() {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading product.</p>;
 
-  const product = data;
+  if (!data) return <p>No product found.</p>;
+
+  const product: Product = data;
 
   return (
     <div>
@@ -30,7 +43,7 @@ export default function ProductDetail() {
         <div className="flex flex-col lg:flex-row">
           <div className="bg-gray-200 w-full lg:w-1/2 h-64 rounded-lg">
             <Image
-              src={product.imageUrl}
+              src={product.imageUrl} 
               alt="Product Image"
               width={100}
               height={100}
