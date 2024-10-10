@@ -11,6 +11,9 @@ interface Product {
   reviews: number;
   imageUrl: string;
 }
+
+type CreateProductPayload = Omit<Product, "id">;
+
 export async function getAllCategories() {
   try {
     const response = await api.get(
@@ -52,7 +55,7 @@ export async function getProduct(id: string): Promise<Product> {
   }
 }
 
-export async function createProduct(payload: any) {
+export async function createProduct(payload: CreateProductPayload) {
   try {
     const response = await api.post(
       `${apiEndpoints.products.CREATE_PRODUCT}`,
@@ -60,10 +63,12 @@ export async function createProduct(payload: any) {
     );
     return response;
   } catch (error) {
+    console.error("Error creating product:", error.response?.data || error.message);
     throw error;
   }
 }
-export async function updateProduct(payload: any) {
+
+export async function updateProduct(payload: Product) {
   try {
     const response = await api.patch(
       `${apiEndpoints.products.UPDATE_PRODUCT}/${payload.id}`,

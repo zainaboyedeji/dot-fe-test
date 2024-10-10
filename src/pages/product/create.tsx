@@ -61,8 +61,12 @@ export default function CreateProduct() {
         imageUrl: "",
       });
     },
-    onError: (error: any) => {
-      console.error("Error creating product:", error);
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        console.error("Error creating product:", error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
     },
   });
 

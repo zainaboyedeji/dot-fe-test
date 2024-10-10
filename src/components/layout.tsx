@@ -7,12 +7,27 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
-  const [selectedComponent, setSelectedComponent] = useState("Products");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedComponent, setSelectedComponent] = useState("Product");
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  const renderSelectedComponent = () => {
+    switch (selectedComponent) {
+      case "Product":
+        return <div>Product List Component</div>;
+      case "Clothing":
+        return <div>Clothing Component</div>;
+      case "Category":
+        return <div>Category Component</div>;
+      default:
+        return <div>Default Component</div>;
+    }
+  };
+
+  console.log(selectedComponent)
 
   return (
     <div className="flex">
@@ -33,6 +48,7 @@ export default function Layout({ children }: LayoutProps) {
 
       <main className="flex-1 p-6 bg-gray-50"> 
         <Navbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        {renderSelectedComponent()}
         {children}
       </main>
     </div>

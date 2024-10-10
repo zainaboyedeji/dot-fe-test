@@ -12,29 +12,28 @@ interface Product {
   price: number;
   stock: number;
   description: string;
-  material: string;
-  fit: string;
-  sizes: string[];
-  care: string;
+  reviews: string;
+  rating: string;
+  imageUrl: string;
 }
 
 export default function EditProduct() {
   const router = useRouter();
+
   const { id } = router.query;
   const parsedId = typeof id === "string" ? Number(id) : undefined;
   const [product, setProduct] = useState<Product>({
     id: parsedId ?? 0,
-    name: "Men's Casual Shirt",
-    brand: "FashionCo",
-    category: "Clothing",
-    subCategory: "Men",
-    price: 39.99,
-    stock: 75,
-    description: "Comfortable and stylish casual shirt for men.",
-    material: "Cotton",
-    fit: "Regular",
-    sizes: ["S", "M", "L", "XL"],
-    care: "Machine Washable",
+    name: "",
+    brand: "",
+    category: "",
+    subCategory: "",
+    price: 0,
+    stock: 0,
+    description: "",
+    reviews:"",
+    rating:"",
+    imageUrl:"",
   });
 
   const [errors, setErrors] = useState<{ price?: string; stock?: string }>({});

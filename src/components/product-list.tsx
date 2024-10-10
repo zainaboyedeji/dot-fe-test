@@ -28,8 +28,18 @@ export default function ProductList({ products }: ProductListProps) {
   };
 
   const addToCart = (product: Product) => {
+    const existingProductIndex = cartItems.findIndex((item) => item.id === product.id);
+  
+    if (existingProductIndex !== -1) {
+      const updatedCart = [...cartItems];
+      updatedCart[existingProductIndex].quantity! += 1;
+      setCartItems(updatedCart);
+    } else {
+      setCartItems([...cartItems, { ...product, quantity: 1 }]);
+    }
     setIsCartOpen(true);
   };
+  
 
   const handleQuantityChange = (index: number, increment: boolean) => {
     const updatedCart = [...cartItems];
