@@ -1,5 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
+import { getAllCategories } from '@/services/api';
 
 const categories = [
   { name: 'Product', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
@@ -13,6 +15,11 @@ interface SidebarProps {
 
 export default function Sidebar({ setSelectedComponent }: SidebarProps) {
   const router = useRouter();
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["categories"], 
+    queryFn: getAllCategories,
+  });
+
 
   const handleCategoryClick = (categoryName: string) => {
     setSelectedComponent(categoryName);
