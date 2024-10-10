@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import React,{ useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { updateProduct } from "@/services/api";
 import { notifyError, notifySuccess } from "@/util/utils";
 import { FaArrowLeft } from "react-icons/fa6";
 import WebPageTitle from "@/components/webpage-title";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 interface Product {
   id: number;
@@ -20,67 +22,30 @@ interface Product {
   imageUrl: string;
 }
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Product name is required"),
+  brand: Yup.string().required("Brand is required"),
+  category: Yup.string().required("Category is required"),
+  subCategory: Yup.string().required("Sub Category is required"),
+  price: Yup.number().min(0, "Price must be a positive number").required(),
+  stock: Yup.number()
+    .integer("Stock must be an integer")
+    .min(0, "Stock must be a non-negative integer")
+    .required(),
+  description: Yup.string().required("Description is required"),
+  reviews: Yup.number().min(0, "Reviews must be a non-negative number").required(),
+  rating: Yup.number().min(0, "Rating must be a non-negative number").required(),
+  imageUrl: Yup.string()
+    .url("Image URL must be a valid URL")
+    .required("Image URL is required"),
+});
+
 export default function EditProduct() {
   const router = useRouter();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [errors, setErrors] = useState<Partial<Product>>({});
-
-  useEffect(() => {
-    const storedProduct = localStorage.getItem("editProduct");
-    if (storedProduct) {
-      setProduct(JSON.parse(storedProduct));
-    }
-  }, []);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setProduct((prev) => ({
-      ...prev!,
-      [name]: name === "price" || name === "stock" ? Number(value) : value,
-    }));
-
-    // Clear specific error when user starts typing
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-  };
-
-  const validateInputs = () => {
-    const newErrors: Partial<Product> = {};
-    if (!product?.name) newErrors.name = "Product name is required";
-    if (!product?.brand) newErrors.brand = "Brand is required";
-    if (!product?.category) newErrors.category = "Category is required";
-    if (!product?.subCategory)
-      newErrors.subCategory = "Sub category is required";
-    if (product?.price !== undefined && product.price <= 0) {
-      newErrors.price = "Price must be a positive number";
-    }
-    if (product?.reviews !== undefined && product.reviews <= 0) {
-      newErrors.reviews = "Reviews must be a positive number";
-    }
-    if (product?.rating !== undefined && product.rating <= 0) {
-      newErrors.rating = "Rating must be a  number";
-    }
-    if (
-      product?.stock !== undefined &&
-      (product.stock < 0 || !Number.isInteger(product.stock))
-    ) {
-      newErrors.stock = "Stock must be a non-negative integer";
-    }
-
-    if (!product?.description)
-      newErrors.description = "Description is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const { id } = router.query;
 
   const mutation = useMutation({
-    mutationFn: async () => {
-      if (validateInputs() && product) {
-        await updateProduct(product);
-      }
-    },
+    mutationFn: updateProduct,
     onError: (error) => {
       notifyError(error.message);
     },
@@ -90,9 +55,18 @@ export default function EditProduct() {
     },
   });
 
-  const handleUpdateProduct = () => {
-    mutation.mutate();
+  const handleUpdateProduct = (values: Product) => {
+    mutation.mutate(values);
   };
+
+  const [product, setProduct] = React.useState<Product | null>(null);
+
+  useEffect(() => {
+    const storedProduct = localStorage.getItem("editProduct");
+    if (storedProduct) {
+      setProduct(JSON.parse(storedProduct));
+    }
+  }, []);
 
   if (!product) return <p>Loading...</p>;
 
@@ -107,123 +81,118 @@ export default function EditProduct() {
         <FaArrowLeft className="mr-2 mt-1" />
         Back to products
       </div>
+
       <div className="p-4 bg-white rounded-lg shadow-md w-full lg:w-2/3 mx-auto">
         <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-bold mb-2">Product Name</label>
-            <input
-              type="text"
-              name="name"
-              value={product.name}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.name && <p className="text-red-500">{errors.name}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Brand</label>
-            <input
-              type="text"
-              name="brand"
-              value={product.brand}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.brand && <p className="text-red-500">{errors.brand}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Category</label>
-            <input
-              type="text"
-              name="category"
-              value={product.category}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.category && (
-              <p className="text-red-500">{errors.category}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Sub Category</label>
-            <input
-              type="text"
-              name="subCategory"
-              value={product.subCategory}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.subCategory && (
-              <p className="text-red-500">{errors.subCategory}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Price</label>
-            <input
-              type="number"
-              name="price"
-              value={product.price}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.price && <p className="text-red-500">{errors.price}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Reviews</label>
-            <input
-              type="number"
-              name="reviews"
-              value={product.reviews}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.reviews && <p className="text-red-500">{errors.reviews}</p>}
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Stock</label>
-            <input
-              type="number"
-              name="stock"
-              value={product.stock}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-            {errors.stock && <p className="text-red-500">{errors.stock}</p>}
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Rating</label>
-          <input
-            type="number"
-            name="rating"
-            value={product.rating}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-          {errors.rating && <p className="text-red-500">{errors.rating}</p>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold mb-2">Description</label>
-          <textarea
-            name="description"
-            value={product.description}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full h-32"
-          />
-          {errors.description && (
-            <p className="text-red-500">{errors.description}</p>
+        <Formik
+          initialValues={product}
+          validationSchema={validationSchema}
+          onSubmit={handleUpdateProduct}
+        >
+          {({ isSubmitting }) => (
+            <Form className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-bold mb-2">Product Name</label>
+                <Field
+                  type="text"
+                  name="name"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="name" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Brand</label>
+                <Field
+                  type="text"
+                  name="brand"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="brand" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Category</label>
+                <Field
+                  type="text"
+                  name="category"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="category" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Sub Category</label>
+                <Field
+                  type="text"
+                  name="subCategory"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="subCategory" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Price</label>
+                <Field
+                  type="number"
+                  name="price"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="price" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Reviews</label>
+                <Field
+                  type="number"
+                  name="reviews"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="reviews" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Stock</label>
+                <Field
+                  type="number"
+                  name="stock"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="stock" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Rating</label>
+                <Field
+                  type="number"
+                  name="rating"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="rating" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Description</label>
+                <Field
+                  as="textarea"
+                  name="description"
+                  className="border rounded-lg p-2 w-full h-32"
+                />
+                <ErrorMessage name="description" component="p" className="text-red-500" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Image URL</label>
+                <Field
+                  type="text"
+                  name="imageUrl"
+                  className="border rounded-lg p-2 w-full"
+                />
+                <ErrorMessage name="imageUrl" component="p" className="text-red-500" />
+              </div>
+              <div className="flex justify-end mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white py-2 px-4 rounded-lg"
+                  disabled={isSubmitting}
+                >
+                  Update Product
+                </button>
+              </div>
+            </Form>
           )}
-        </div>
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={handleUpdateProduct}
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            Update Product
-          </button>
-        </div>
+        </Formik>
       </div>
     </>
   );
