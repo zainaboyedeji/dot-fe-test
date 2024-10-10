@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { updateProduct } from "@/services/api";
+import { notifyError, notifySuccess } from "@/util/utils";
+import { FaArrowLeft } from "react-icons/fa6";
 
 interface Product {
   id: number;
@@ -35,16 +37,16 @@ export default function EditProduct() {
 
   const [product, setProduct] = useState<Product>({
     id: Number(id) || 0,
-    name: name as string || "",
-    brand: brand as string || "",
-    category: category as string || "",
-    subCategory: subCategory as string || "",
+    name: (name as string) || "",
+    brand: (brand as string) || "",
+    category: (category as string) || "",
+    subCategory: (subCategory as string) || "",
     price: Number(price) || 0,
     stock: Number(stock) || 0,
-    description: description as string || "",
-    reviews: reviews as string || "",
-    rating: rating as string || "",
-    imageUrl: imageUrl as string || "",
+    description: (description as string) || "",
+    reviews: (reviews as string) || "",
+    rating: (rating as string) || "",
+    imageUrl: (imageUrl as string) || "",
   });
 
   const [errors, setErrors] = useState<{ price?: string; stock?: string }>({});
@@ -80,9 +82,10 @@ export default function EditProduct() {
       }
     },
     onError: (error) => {
-      console.error("Error updating product:", error);
+      notifyError(error.message);
     },
     onSuccess: () => {
+      notifySuccess("Product Edited Successfully");
       router.push("/product");
     },
   });
@@ -92,87 +95,93 @@ export default function EditProduct() {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md w-full lg:w-2/3 mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-bold mb-2">Product Name</label>
-          <input
-            type="text"
-            name="name"
-            value={product.name}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Brand</label>
-          <input
-            type="text"
-            name="brand"
-            value={product.brand}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Category</label>
-          <input
-            type="text"
-            name="category"
-            value={product.category}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Sub Category</label>
-          <input
-            type="text"
-            name="subCategory"
-            value={product.subCategory}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Price</label>
-          <input
-            type="number"
-            name="price"
-            value={product.price}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-          {errors.price && <p className="text-red-500">{errors.price}</p>}
-        </div>
-        <div>
-          <label className="block text-sm font-bold mb-2">Stock</label>
-          <input
-            type="number"
-            name="stock"
-            value={product.stock}
-            onChange={handleInputChange}
-            className="border rounded-lg p-2 w-full"
-          />
-          {errors.stock && <p className="text-red-500">{errors.stock}</p>}
-        </div>
+    <>
+      <div className="flex">
+        <FaArrowLeft className="mr-2 mt-1" />
+        Back to products
       </div>
-      <div>
-        <label className="block text-sm font-bold mb-2">Description</label>
-        <textarea
-          name="description"
-          value={product.description}
-          onChange={handleInputChange}
-          className="border rounded-lg p-2 w-full h-24"
-        ></textarea>
+      <div className="p-4 bg-white rounded-lg shadow-md w-full lg:w-2/3 mx-auto">
+        <h2 className="text-2xl font-bold mb-4">Edit Product</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold mb-2">Product Name</label>
+            <input
+              type="text"
+              name="name"
+              value={product.name}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Brand</label>
+            <input
+              type="text"
+              name="brand"
+              value={product.brand}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Category</label>
+            <input
+              type="text"
+              name="category"
+              value={product.category}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Sub Category</label>
+            <input
+              type="text"
+              name="subCategory"
+              value={product.subCategory}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={product.price}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+            {errors.price && <p className="text-red-500">{errors.price}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Stock</label>
+            <input
+              type="number"
+              name="stock"
+              value={product.stock}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+            {errors.stock && <p className="text-red-500">{errors.stock}</p>}
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-bold mb-2">Description</label>
+          <textarea
+            name="description"
+            value={product.description}
+            onChange={handleInputChange}
+            className="border rounded-lg p-2 w-full h-24"
+          ></textarea>
+        </div>
+        <button
+          onClick={handleUpdateProduct}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
+        >
+          Update Product
+        </button>
       </div>
-      <button
-        onClick={handleUpdateProduct}
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
-      >
-        Update Product
-      </button>
-    </div>
+    </>
   );
 }
