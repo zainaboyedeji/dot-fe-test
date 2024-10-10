@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import Button from "./button";
 
 interface FiltersProps {
   onFilter: (filters: {
@@ -59,19 +60,11 @@ export default function Filters({ onFilter }: FiltersProps) {
         <option value="desc">Descending</option>
       </select>
 
-      <button
-        onClick={handleFilter}
-        className="bg-black text-white px-4 py-2 rounded-md w-full sm:w-auto"
-      >
-        Filter
-      </button>
+      <Button onClick={handleFilter}> Filter</Button>
 
-      <button
-        onClick={() => router.push(`/product/create`)}
-        className="bg-black text-white px-4 py-2 rounded-md w-full sm:w-auto"
-      >
+      <Button onClick={() => router.push(`/product/create`)}>
         Create New Product
-      </button>
+      </Button>
     </div>
   );
 }

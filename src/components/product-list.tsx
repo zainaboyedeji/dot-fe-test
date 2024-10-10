@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { useCart } from "@/context/cart-context";
 import { FiX } from "react-icons/fi";
+import Button from "./button";
 
 interface Product {
   name: string;
@@ -43,12 +44,7 @@ export default function ProductList({ products }: ProductListProps) {
               </p>
               <p className="text-xl font-bold">${product.price.toFixed(2)}</p>
             </div>
-            <button
-              onClick={() => addToCart(product)}
-              className="mt-4 bg-black text-white w-full py-2 rounded-full"
-            >
-              Add to Cart
-            </button>
+            <Button onClick={() => addToCart(product)}> Add to Cart</Button>
           </div>
         ))}
       </div>
@@ -59,17 +55,11 @@ export default function ProductList({ products }: ProductListProps) {
         } transition-transform duration-300`}
       >
         <div className="p-4">
-          {/* Close Cart Drawer Button */}
-          <button
-            onClick={toggleCartDrawer}
-            className="text-gray-500 hover:text-black absolute top-4 right-4 text-2xl"
-          >
-            <FiX />
-          </button>
-
+          <div>
+            <FiX onClick={toggleCartDrawer} />
+          </div>
           <h2 className="text-xl font-bold mb-4">Shopping Cart</h2>
 
-          {/* Cart Items */}
           {cartItems.length > 0 ? (
             <>
               <p className="text-gray-500 mb-4">
@@ -86,41 +76,30 @@ export default function ProductList({ products }: ProductListProps) {
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {/* Decrease quantity */}
-                      <button
+                      <Button
                         onClick={() => handleQuantityChange(index, false)}
-                        className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
                       >
                         -
-                      </button>
+                      </Button>
+
                       <span>{item.quantity || 1}</span>
-                      {/* Increase quantity */}
-                      <button
-                        onClick={() => handleQuantityChange(index, true)}
-                        className="w-8 h-8 bg-gray-300 text-gray-700 rounded-lg"
-                      >
+                      <Button onClick={() => handleQuantityChange(index, true)}>
                         +
-                      </button>
+                      </Button>
                     </div>
-                    {/* Remove from cart */}
-                    <button
-                      onClick={() => removeFromCart(index)}
-                      className="text-red-500 ml-2"
-                    >
-                      &times;
-                    </button>
+
+                    <div>
+                      <FiX onClick={() => removeFromCart(index)} />
+                    </div>
                   </li>
                 ))}
               </ul>
 
-              {/* Cart Total */}
               <div className="mt-6">
                 <p className="text-xl font-bold text-right">
                   Total: ${calculateTotal().toFixed(2)}
                 </p>
-                <button className="mt-4 bg-black text-white w-full py-2 rounded-full">
-                  Proceed to Checkout
-                </button>
+                <Button> Proceed to Checkout</Button>
               </div>
             </>
           ) : (

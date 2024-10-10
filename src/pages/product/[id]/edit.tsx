@@ -1,4 +1,4 @@
-import React,{ useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { updateProduct } from "@/services/api";
@@ -7,6 +7,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import WebPageTitle from "@/components/webpage-title";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Button from "@/components/button";
 
 interface Product {
   id: number;
@@ -33,8 +34,12 @@ const validationSchema = Yup.object().shape({
     .min(0, "Stock must be a non-negative integer")
     .required(),
   description: Yup.string().required("Description is required"),
-  reviews: Yup.number().min(0, "Reviews must be a non-negative number").required(),
-  rating: Yup.number().min(0, "Rating must be a non-negative number").required(),
+  reviews: Yup.number()
+    .min(0, "Reviews must be a non-negative number")
+    .required(),
+  rating: Yup.number()
+    .min(0, "Rating must be a non-negative number")
+    .required(),
   imageUrl: Yup.string()
     .url("Image URL must be a valid URL")
     .required("Image URL is required"),
@@ -92,13 +97,19 @@ export default function EditProduct() {
           {({ isSubmitting }) => (
             <Form className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold mb-2">Product Name</label>
+                <label className="block text-sm font-bold mb-2">
+                  Product Name
+                </label>
                 <Field
                   type="text"
                   name="name"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="name" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="name"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-2">Brand</label>
@@ -107,7 +118,11 @@ export default function EditProduct() {
                   name="brand"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="brand" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="brand"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-2">Category</label>
@@ -116,16 +131,26 @@ export default function EditProduct() {
                   name="category"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="category" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="category"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-2">Sub Category</label>
+                <label className="block text-sm font-bold mb-2">
+                  Sub Category
+                </label>
                 <Field
                   type="text"
                   name="subCategory"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="subCategory" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="subCategory"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-2">Price</label>
@@ -134,7 +159,11 @@ export default function EditProduct() {
                   name="price"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="price" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="price"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-2">Reviews</label>
@@ -143,7 +172,11 @@ export default function EditProduct() {
                   name="reviews"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="reviews" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="reviews"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-2">Stock</label>
@@ -152,7 +185,11 @@ export default function EditProduct() {
                   name="stock"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="stock" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="stock"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
                 <label className="block text-sm font-bold mb-2">Rating</label>
@@ -161,34 +198,44 @@ export default function EditProduct() {
                   name="rating"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="rating" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="rating"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-2">Description</label>
+                <label className="block text-sm font-bold mb-2">
+                  Description
+                </label>
                 <Field
                   as="textarea"
                   name="description"
                   className="border rounded-lg p-2 w-full h-32"
                 />
-                <ErrorMessage name="description" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="description"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div>
-                <label className="block text-sm font-bold mb-2">Image URL</label>
+                <label className="block text-sm font-bold mb-2">
+                  Image URL
+                </label>
                 <Field
                   type="text"
                   name="imageUrl"
                   className="border rounded-lg p-2 w-full"
                 />
-                <ErrorMessage name="imageUrl" component="p" className="text-red-500" />
+                <ErrorMessage
+                  name="imageUrl"
+                  component="p"
+                  className="text-red-500"
+                />
               </div>
               <div className="flex justify-end mt-4">
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-                  disabled={isSubmitting}
-                >
-                  Update Product
-                </button>
+                <Button disabled={isSubmitting}> Update Product</Button>
               </div>
             </Form>
           )}
