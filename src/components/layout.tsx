@@ -34,7 +34,7 @@ export default function Layout({ children }: LayoutProps) {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:relative lg:translate-x-0 lg:w-64 lg:block`}
       >
-        <Sidebar setSelectedComponent={setSelectedComponent} />
+        <Sidebar setSelectedComponent={setSelectedComponent} toggleSidebar={toggleSidebar} />
       </aside>
 
       {isSidebarOpen && (
@@ -44,7 +44,7 @@ export default function Layout({ children }: LayoutProps) {
         />
       )}
 
-      <main className="flex-1 p-6 bg-gray-50"> 
+      <main className="flex-1 p-6 bg-gray-50">
         <Navbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         {renderSelectedComponent()}
         {children}

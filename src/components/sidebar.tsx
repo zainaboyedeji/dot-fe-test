@@ -1,29 +1,24 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-// import { useQuery } from '@tanstack/react-query';
-// import { getAllCategories } from '@/services/api';
+import React from "react";
+import { useRouter } from "next/router";
 
 const categories = [
-  { name: 'Product', subcategories: ['Smartphones', 'Laptops', 'Accessories'] },
-  { name: 'Clothing', subcategories: ['Men', 'Women', 'Kids'] },
-  { name: 'Category', subcategories: ['Furniture', 'Decor', 'Kitchen'] },
+  { name: "Product", subcategories: ["Smartphones", "Laptops", "Accessories"] },
+  { name: "Clothing", subcategories: ["Men", "Women", "Kids"] },
+  { name: "Category", subcategories: ["Furniture", "Decor", "Kitchen"] },
 ];
 
 interface SidebarProps {
   setSelectedComponent: (component: string) => void;
+  toggleSidebar: () => void; 
 }
 
-export default function Sidebar({ setSelectedComponent }: SidebarProps) {
+export default function Sidebar({ setSelectedComponent, toggleSidebar }: SidebarProps) {
   const router = useRouter();
-  // const { data, isLoading, error } = useQuery({
-  //   queryKey: ["categories"], 
-  //   queryFn: getAllCategories,
-  // });
-
 
   const handleCategoryClick = (categoryName: string) => {
     setSelectedComponent(categoryName);
-    router.push(`/${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
+    toggleSidebar(); 
+    router.push(`/${categoryName.toLowerCase().replace(/\s+/g, "-")}`);
   };
 
   return (
