@@ -21,8 +21,9 @@ interface Product {
 export default function EditProduct() {
   const router = useRouter();
   const { id } = router.query;
+  const parsedId = typeof id === "string" ? Number(id) : undefined;
   const [product, setProduct] = useState<Product>({
-    id: id,
+    id: parsedId ?? 0,
     name: "Men's Casual Shirt",
     brand: "FashionCo",
     category: "Clothing",
@@ -71,10 +72,6 @@ export default function EditProduct() {
     },
     onError: (error) => {
       console.error("Error updating product:", error);
-      alert(
-        "Failed to update the product: " +
-          (error.response?.data?.message || error.message)
-      );
     },
     onSuccess: () => {
       console.log("Product updated successfully!");

@@ -21,12 +21,15 @@ export default function ProductDetail() {
 
   const { data, isLoading, error } = useQuery<Product, Error>({
     queryKey: ["product", id],
-    queryFn: () => {
+    queryFn: async () => {
       if (!id) return Promise.reject("No ID");
-      return getProduct(id as string);
+      const product = await getProduct(id as string);
+      return { ...product, id: Number(product.id) };
     },
     enabled: !!id,
   });
+  
+  
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -41,10 +44,6 @@ export default function ProductDetail() {
     },
     onError: (error) => {
       console.error("Error deleting product:", error);
-      alert(
-        "Failed to delete the product: " +
-          (error.response?.data?.message || error.message)
-      );
     },
   });
 
