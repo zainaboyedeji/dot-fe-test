@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 interface FiltersProps {
-  onFilter: (filters: { search: string; minPrice: number; maxPrice: number; order: string }) => void;
+  onFilter: (filters: {
+    search: string;
+    minPrice: number;
+    maxPrice: number;
+    order: string;
+  }) => void;
 }
 
 export default function Filters({ onFilter }: FiltersProps) {
-  const [search, setSearch] = useState('');
+  const router = useRouter();
+  const [search, setSearch] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(2000);
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState("asc");
 
   const handleFilter = () => {
     onFilter({ search, minPrice, maxPrice, order });
@@ -41,12 +48,25 @@ export default function Filters({ onFilter }: FiltersProps) {
           min={minPrice}
         />
       </div>
-      <select value={order} onChange={(e) => setOrder(e.target.value)} className="border p-2 rounded-md">
+      <select
+        value={order}
+        onChange={(e) => setOrder(e.target.value)}
+        className="border p-2 rounded-md"
+      >
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
       </select>
-      <button onClick={handleFilter} className="bg-blue-500 text-white px-4 py-2 rounded-md">
+      <button
+        onClick={handleFilter}
+        className="bg-black text-white px-4 py-2 rounded-md"
+      >
         Filter
+      </button>
+      <button
+        onClick={() => router.push(`/product/create`)}
+        className="bg-black text-white px-4 py-2 rounded-md"
+      >
+        Create New Product
       </button>
     </div>
   );

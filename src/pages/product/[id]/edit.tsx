@@ -78,7 +78,7 @@ export default function EditProduct() {
     },
     onSuccess: () => {
       console.log("Product updated successfully!");
-      // Optionally navigate or update state to reflect changes
+      router.push("/product");
     },
   });
 
@@ -161,41 +161,6 @@ export default function EditProduct() {
           onChange={handleInputChange}
           className="border rounded-lg p-2 w-full"
         />
-      </div>
-      <div className="mt-4">
-        <h3 className="text-lg font-bold">Specifications</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-          <div>
-            <label className="block text-sm font-bold mb-2">Material</label>
-            <input
-              type="text"
-              name="material"
-              value={product.material}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Fit</label>
-            <input
-              type="text"
-              name="fit"
-              value={product.fit}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Care</label>
-            <input
-              type="text"
-              name="care"
-              value={product.care}
-              onChange={handleInputChange}
-              className="border rounded-lg p-2 w-full"
-            />
-          </div>
-        </div>
       </div>
       <button
         onClick={handleUpdateProduct}
