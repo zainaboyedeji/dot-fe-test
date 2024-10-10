@@ -19,7 +19,7 @@ export default function ProductList({ products }: ProductListProps) {
   const router = useRouter();
 
   const [cartItems, setCartItems] = useState<Product[]>(
-    products?.map((product) => ({ ...product, quantity: 1 })) 
+    products?.map((product) => ({ ...product, quantity: 1 }))
   );
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -28,8 +28,10 @@ export default function ProductList({ products }: ProductListProps) {
   };
 
   const addToCart = (product: Product) => {
-    const existingProductIndex = cartItems.findIndex((item) => item.id === product.id);
-  
+    const existingProductIndex = cartItems.findIndex(
+      (item) => item.id === product.id
+    );
+
     if (existingProductIndex !== -1) {
       const updatedCart = [...cartItems];
       updatedCart[existingProductIndex].quantity! += 1;
@@ -39,16 +41,14 @@ export default function ProductList({ products }: ProductListProps) {
     }
     setIsCartOpen(true);
   };
-  
 
   const handleQuantityChange = (index: number, increment: boolean) => {
     const updatedCart = [...cartItems];
     if (increment) {
-      updatedCart[index].quantity! += 1; 
+      updatedCart[index].quantity! += 1;
     } else {
-      updatedCart[index].quantity = updatedCart[index].quantity! > 1
-        ? updatedCart[index].quantity! - 1
-        : 1; 
+      updatedCart[index].quantity =
+        updatedCart[index].quantity! > 1 ? updatedCart[index].quantity! - 1 : 1;
     }
     setCartItems(updatedCart);
   };
@@ -59,22 +59,26 @@ export default function ProductList({ products }: ProductListProps) {
   };
 
   const calculateTotal = () => {
-    return cartItems?.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
+    return cartItems?.reduce(
+      (total, item) => total + item.price * (item.quantity || 1),
+      0
+    );
   };
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">All Products</h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products?.map((product, index) => (
-          <div key={index} className="bg-white p-4 rounded-lg shadow-md" onClick={() =>  router.push(`/product/${product.id}`)}>
-            <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
-            <h3 className="font-bold">{product.name}</h3>
-            <p className="text-sm text-gray-500">
-              ★ {product.rating} ({product.reviews} reviews)
-            </p>
-            <p className="text-xl font-bold">${product.price.toFixed(2)}</p>
+          <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+            <div onClick={() => router.push(`/product/${product.id}`)}>
+              <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
+              <h3 className="font-bold">{product.name}</h3>
+              <p className="text-sm text-gray-500">
+                ★ {product.rating} ({product.reviews} reviews)
+              </p>
+              <p className="text-xl font-bold">${product.price.toFixed(2)}</p>
+            </div>
             <button
               onClick={() => addToCart(product)}
               className="mt-4 bg-black text-white w-full py-2 rounded-full"

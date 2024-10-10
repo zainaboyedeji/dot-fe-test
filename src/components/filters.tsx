@@ -22,49 +22,53 @@ export default function Filters({ onFilter }: FiltersProps) {
   };
 
   return (
-    <div className="flex justify-between p-4 bg-white shadow-md mb-4">
+    <div className="flex flex-col sm:flex-row justify-between p-4 bg-white shadow-md mb-4 space-y-4 sm:space-y-0 sm:space-x-4">
       <input
         type="text"
         placeholder="Search products..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="border p-2 rounded-md"
+        className="border p-2 rounded-md w-full sm:w-auto"
       />
-      <div className="flex items-center space-x-4">
+
+      <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
         <input
           type="number"
           value={minPrice}
           onChange={(e) => setMinPrice(Number(e.target.value))}
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md w-full sm:w-auto"
           min={0}
           max={maxPrice}
         />
-        <span>to</span>
+        <span className="hidden sm:inline">to</span>
         <input
           type="number"
           value={maxPrice}
           onChange={(e) => setMaxPrice(Number(e.target.value))}
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md w-full sm:w-auto"
           min={minPrice}
         />
       </div>
+
       <select
         value={order}
         onChange={(e) => setOrder(e.target.value)}
-        className="border p-2 rounded-md"
+        className="border p-2 rounded-md w-full sm:w-auto"
       >
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>
       </select>
+
       <button
         onClick={handleFilter}
-        className="bg-black text-white px-4 py-2 rounded-md"
+        className="bg-black text-white px-4 py-2 rounded-md w-full sm:w-auto"
       >
         Filter
       </button>
+
       <button
         onClick={() => router.push(`/product/create`)}
-        className="bg-black text-white px-4 py-2 rounded-md"
+        className="bg-black text-white px-4 py-2 rounded-md w-full sm:w-auto"
       >
         Create New Product
       </button>
