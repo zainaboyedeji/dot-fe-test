@@ -1,6 +1,7 @@
 import Filters from "@/components/filters";
 import Pagination from "@/components/pagination";
 import ProductList from "@/components/product-list";
+import CardSkeleton from "@/components/card-skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getAllProducts } from "@/services/api";
@@ -31,7 +32,7 @@ export default function Products() {
       <div>
         <Filters onFilter={handleFilter} />
         {isLoading ? (
-          <p>Loading products...</p>
+          <CardSkeleton />  
         ) : error ? (
           <p>Error loading products</p>
         ) : (
