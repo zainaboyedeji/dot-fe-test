@@ -1,18 +1,6 @@
 import api from "@/util/api";
 import { apiEndpoints } from "@/util/endpoints";
-
-interface Product {
-  name: string;
-  brand: string;
-  category: string;
-  subCategory: string;
-  price: number;
-  stock: number;
-  description: string;
-  imageUrl: string;
-  rating: number;
-  reviews: number;
-}
+import { Product } from "@/models/product";
 
 type CreateProductPayload = Omit<Product, "id">;
 
@@ -65,7 +53,6 @@ export async function createProduct(payload: CreateProductPayload) {
     );
     return response;
   } catch (error) {
-    console.error("Error creating product:", error.response?.data || error.message);
     throw error;
   }
 }
@@ -78,11 +65,9 @@ export async function updateProduct(payload: Product) {
     );
     return response.data;
   } catch (error) {
-    console.error('Update Product Error:', error.response?.data || error.message);
-    throw error; 
+    throw error;
   }
 }
-
 
 export async function deleteProduct(id: number) {
   try {
