@@ -14,8 +14,8 @@ interface Product {
   price: number;
   stock: number;
   description: string;
-  reviews: string;
-  rating: string;
+  reviews: number;
+  rating: number;
   imageUrl: string;
 }
 
@@ -49,14 +49,26 @@ export default function EditProduct() {
     if (!product?.name) newErrors.name = "Product name is required";
     if (!product?.brand) newErrors.brand = "Brand is required";
     if (!product?.category) newErrors.category = "Category is required";
-    if (!product?.subCategory) newErrors.subCategory = "Sub category is required";
+    if (!product?.subCategory)
+      newErrors.subCategory = "Sub category is required";
     if (product?.price !== undefined && product.price <= 0) {
       newErrors.price = "Price must be a positive number";
     }
-    if (product?.stock !== undefined && (product.stock < 0 || !Number.isInteger(product.stock))) {
+    if (product?.reviews !== undefined && product.reviews <= 0) {
+      newErrors.reviews = "Reviews must be a positive number";
+    }
+    if (product?.rating !== undefined && product.rating <= 0) {
+      newErrors.rating = "Rating must be a  number";
+    }
+    if (
+      product?.stock !== undefined &&
+      (product.stock < 0 || !Number.isInteger(product.stock))
+    ) {
       newErrors.stock = "Stock must be a non-negative integer";
     }
-    if (!product?.description) newErrors.description = "Description is required";
+
+    if (!product?.description)
+      newErrors.description = "Description is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -85,7 +97,10 @@ export default function EditProduct() {
 
   return (
     <>
-      <div className="flex cursor-pointer" onClick={() => router.push("/product")}>
+      <div
+        className="flex cursor-pointer"
+        onClick={() => router.push("/product")}
+      >
         <FaArrowLeft className="mr-2 mt-1" />
         Back to products
       </div>
@@ -123,7 +138,9 @@ export default function EditProduct() {
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             />
-            {errors.category && <p className="text-red-500">{errors.category}</p>}
+            {errors.category && (
+              <p className="text-red-500">{errors.category}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Sub Category</label>
@@ -134,7 +151,9 @@ export default function EditProduct() {
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             />
-            {errors.subCategory && <p className="text-red-500">{errors.subCategory}</p>}
+            {errors.subCategory && (
+              <p className="text-red-500">{errors.subCategory}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Price</label>
@@ -146,6 +165,17 @@ export default function EditProduct() {
               className="border rounded-lg p-2 w-full"
             />
             {errors.price && <p className="text-red-500">{errors.price}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Reviews</label>
+            <input
+              type="number"
+              name="reviews"
+              value={product.reviews}
+              onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
+            />
+            {errors.reviews && <p className="text-red-500">{errors.reviews}</p>}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Stock</label>
@@ -160,6 +190,18 @@ export default function EditProduct() {
           </div>
         </div>
         <div>
+          <label className="block text-sm font-bold mb-2">Rating</label>
+          <input
+            type="number"
+            name="rating"
+            value={product.rating}
+            onChange={handleInputChange}
+            className="border rounded-lg p-2 w-full"
+          />
+          {errors.rating && <p className="text-red-500">{errors.rating}</p>}
+        </div>
+
+        <div>
           <label className="block text-sm font-bold mb-2">Description</label>
           <textarea
             name="description"
@@ -167,7 +209,9 @@ export default function EditProduct() {
             onChange={handleInputChange}
             className="border rounded-lg p-2 w-full h-32"
           />
-          {errors.description && <p className="text-red-500">{errors.description}</p>}
+          {errors.description && (
+            <p className="text-red-500">{errors.description}</p>
+          )}
         </div>
         <div className="flex justify-end mt-4">
           <button

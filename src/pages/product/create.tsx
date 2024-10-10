@@ -13,6 +13,8 @@ interface Product {
   stock: number;
   description: string;
   imageUrl: string;
+  rating: number;
+  reviews: number;
 }
 
 export default function CreateProduct() {
@@ -27,6 +29,8 @@ export default function CreateProduct() {
     stock: 0,
     description: "",
     imageUrl: "",
+    rating: 0,
+    reviews: 0,
   });
 
   const [errors, setErrors] = useState<Partial<Product>>({});
@@ -37,7 +41,7 @@ export default function CreateProduct() {
   ) => {
     const { name, value } = e.target;
 
-    if (name === "price" || name === "stock") {
+    if (name === "price" || name === "stock" || name === "rating") {
       setProduct((prevProduct) => ({
         ...prevProduct,
         [name]: parseFloat(value),
@@ -46,7 +50,6 @@ export default function CreateProduct() {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
 
-    // Clear the specific error when the user starts typing
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
@@ -56,8 +59,11 @@ export default function CreateProduct() {
     if (!product.name) newErrors.name = "Product name is required";
     if (!product.brand) newErrors.brand = "Brand is required";
     if (!product.category) newErrors.category = "Category is required";
-    if (!product.subCategory) newErrors.subCategory = "Sub Category is required";
+    if (!product.subCategory)
+      newErrors.subCategory = "Sub Category is required";
     if (product.price <= 0) newErrors.price = "Price must be greater than 0";
+    if (product.rating <= 0) newErrors.rating = "Rating must be greater than 0";
+    if (product.reviews <= 0) newErrors.reviews = "Reviews must be greater than 0";
     if (!Number.isInteger(product.stock) || product.stock < 0)
       newErrors.stock = "Stock must be a non-negative integer";
     if (!product.description) newErrors.description = "Description is required";
@@ -81,6 +87,8 @@ export default function CreateProduct() {
         stock: 0,
         description: "",
         imageUrl: "",
+        reviews: 0,
+        rating: 0,
       });
     },
     onError: (error: any) => {
@@ -120,7 +128,9 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Brand"
           />
-          {errors.brand && <p className="text-red-500 text-sm">{errors.brand}</p>}
+          {errors.brand && (
+            <p className="text-red-500 text-sm">{errors.brand}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Category</label>
@@ -132,7 +142,9 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Category"
           />
-          {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
+          {errors.category && (
+            <p className="text-red-500 text-sm">{errors.category}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Sub Category</label>
@@ -144,7 +156,9 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Sub Category"
           />
-          {errors.subCategory && <p className="text-red-500 text-sm">{errors.subCategory}</p>}
+          {errors.subCategory && (
+            <p className="text-red-500 text-sm">{errors.subCategory}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Price</label>
@@ -157,7 +171,9 @@ export default function CreateProduct() {
             placeholder="0"
             min="0"
           />
-          {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
+          {errors.price && (
+            <p className="text-red-500 text-sm">{errors.price}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Stock</label>
@@ -170,9 +186,47 @@ export default function CreateProduct() {
             placeholder="0"
             min="0"
           />
-          {errors.stock && <p className="text-red-500 text-sm">{errors.stock}</p>}
+          {errors.stock && (
+            <p className="text-red-500 text-sm">{errors.stock}</p>
+          )}
         </div>
       </div>
+
+      <div>
+        <label className="block text-sm font-bold mb-2">Rating</label>
+        <input
+          type="number"
+          name="rating"
+          value={product.rating}
+          onChange={handleInputChange}
+          className="border rounded-lg p-2 w-full"
+          placeholder="0"
+          min="0"
+        />
+        {errors.rating && (
+          <p className="text-red-500 text-sm">{errors.rating}</p>
+        )}
+      </div>
+
+
+      <div>
+        <label className="block text-sm font-bold mb-2">Reviews</label>
+        <input
+          type="number"
+          name="reviews"
+          value={product.reviews}
+          onChange={handleInputChange}
+          className="border rounded-lg p-2 w-full"
+          placeholder="0"
+          min="0"
+        />
+        {errors.reviews && (
+          <p className="text-red-500 text-sm">{errors.reviews}</p>
+        )}
+      </div>
+
+     
+
       <div>
         <label className="block text-sm font-bold mb-2">Description</label>
         <textarea
@@ -199,7 +253,7 @@ export default function CreateProduct() {
       </div>
 
       <div className="flex justify-end mt-6 space-x-4">
-        <button className="bg-gray-300 px-4 py-2 rounded-full">Cancel</button>
+        <button className="bg-gray-300 px-4 py-2 rounded-full" onClick={() => router.push("/product")}>Cancel</button>
         <button
           onClick={handleCreateProduct}
           className="bg-blue-500 text-white px-4 py-2 rounded-full"
