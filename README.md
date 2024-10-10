@@ -3,7 +3,7 @@
 ## Setup Instructions
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/project-name.git
+   git clone https://github.com/zainaboyedeji/dot-fe-test
 
 2. cd project-name
 3. npm install
@@ -18,7 +18,6 @@
 - Added Notify
 
 ## Additional Features
-
 
 
 ## Areas for Improvement
