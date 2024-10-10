@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 interface Product {
   name: string;
+  id: number;
   price: number;
   rating: number;
   reviews: number;
@@ -14,8 +16,10 @@ interface ProductListProps {
 }
 
 export default function ProductList({ products }: ProductListProps) {
+  const router = useRouter();
+
   const [cartItems, setCartItems] = useState<Product[]>(
-    products?.map((product) => ({ ...product, quantity: 1 })) // Initializing cart with quantity
+    products?.map((product) => ({ ...product, quantity: 1 })) 
   );
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -54,7 +58,7 @@ export default function ProductList({ products }: ProductListProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products?.map((product, index) => (
-          <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+          <div key={index} className="bg-white p-4 rounded-lg shadow-md" onClick={() =>  router.push(`/product/${product.id}`)}>
             <div className="h-40 bg-gray-200 rounded-lg mb-4"></div>
             <h3 className="font-bold">{product.name}</h3>
             <p className="text-sm text-gray-500">

@@ -4,7 +4,6 @@ import { apiEndpoints } from "@/util/endpoints";
 export async function getAllCategories() {
   try {
     const response = await api.get(`${apiEndpoints.products.GET_ALL_CATEGORIES}`);
-    console.log(response,"category")
     return response;
   } catch (error) {
     throw error;

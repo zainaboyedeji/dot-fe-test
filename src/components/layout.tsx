@@ -16,7 +16,6 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out bg-gray-100 w-64 z-40 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -25,7 +24,6 @@ export default function Layout({ children }: LayoutProps) {
         <Sidebar setSelectedComponent={setSelectedComponent} />
       </aside>
 
-      {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-30 lg:hidden"
