@@ -1,4 +1,3 @@
-// src/pages/product/[id].tsx
 import { useRouter } from "next/router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getProduct, deleteProduct } from "@/services/api";
@@ -8,19 +7,8 @@ import { notifyError, notifySuccess } from "@/util/utils";
 import WebPageTitle from "@/components/webpage-title";
 import { useCart } from "@/context/cart-context";
 import Button from "@/components/button";
+import { Product } from "@/models/product";
 
-interface Product {
-  name: string;
-  brand: string;
-  category: string;
-  subCategory: string;
-  price: number;
-  stock: number;
-  description: string;
-  imageUrl: string;
-  rating: number;
-  reviews: number;
-}
 
 export default function ProductDetail() {
   const router = useRouter();
