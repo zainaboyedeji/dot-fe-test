@@ -10,14 +10,16 @@ import { useCart } from "@/context/cart-context";
 import Button from "@/components/button";
 
 interface Product {
-  id: number;
   name: string;
+  brand: string;
   category: string;
+  subCategory: string;
   price: number;
   stock: number;
+  description: string;
+  imageUrl: string;
   rating: number;
   reviews: number;
-  imageUrl: string;
 }
 
 export default function ProductDetail() {

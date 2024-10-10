@@ -6,12 +6,15 @@ import Button from "./button";
 
 interface Product {
   name: string;
-  id: number;
+  brand: string;
+  category: string;
+  subCategory: string;
   price: number;
+  stock: number;
+  description: string;
+  imageUrl: string;
   rating: number;
   reviews: number;
-  stock?: number;
-  quantity?: number;
 }
 
 interface ProductListProps {

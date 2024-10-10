@@ -10,7 +10,6 @@ import * as Yup from "yup";
 import Button from "@/components/button";
 
 interface Product {
-  id: number;
   name: string;
   brand: string;
   category: string;
@@ -18,9 +17,9 @@ interface Product {
   price: number;
   stock: number;
   description: string;
-  reviews: number;
-  rating: number;
   imageUrl: string;
+  rating: number;
+  reviews: number;
 }
 
 const validationSchema = Yup.object().shape({

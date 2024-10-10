@@ -27,7 +27,7 @@ export default function Sidebar({ setSelectedComponent, toggleSidebar }: Sidebar
         {categories.map((category) => (
           <li key={category.name} className="mb-6">
             <h3
-              className="font-bold text-red-500 cursor-pointer"
+              className="font-bold cursor-pointer"
               onClick={() => handleCategoryClick(category.name)}
             >
               {category.name}

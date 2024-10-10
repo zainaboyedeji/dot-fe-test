@@ -2,14 +2,16 @@ import api from "@/util/api";
 import { apiEndpoints } from "@/util/endpoints";
 
 interface Product {
-  id: string;
   name: string;
+  brand: string;
   category: string;
+  subCategory: string;
   price: number;
   stock: number;
+  description: string;
+  imageUrl: string;
   rating: number;
   reviews: number;
-  imageUrl: string;
 }
 
 type CreateProductPayload = Omit<Product, "id">;
