@@ -7,8 +7,6 @@ export async function getAllProducts({ queryKey }: { queryKey: [string, number] 
     const response = await api.get(`${apiEndpoints.products.GET_ALL_PRODUCTS}`, {
       params: { page },
     });
-    console.log(page, "limit");
-    console.log(response)
     return response;
   } catch (error) {
     throw error;

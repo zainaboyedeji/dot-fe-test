@@ -1,12 +1,26 @@
 import React from "react";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
 
-export default function Navbar() {
+interface NavbarProps {
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
+}
+
+export default function Navbar({ isSidebarOpen, toggleSidebar }: NavbarProps) {
   return (
-    <div className="flex justify-between mb-5">
-      <div>DOT FE TEST APP</div>
+    <div className="flex justify-between items-center mb-5 p-4 bg-gray-100">
+  
+      <div className="text-lg font-bold">DOT FE TEST APP</div>
       <div>
-        <FiShoppingCart />
+        <FiShoppingCart className="text-2xl" />
+      </div>
+
+      <div className="lg:hidden">
+        {isSidebarOpen ? (
+          <FiX className="text-2xl cursor-pointer" onClick={toggleSidebar} />
+        ) : (
+          <FiMenu className="text-2xl cursor-pointer" onClick={toggleSidebar} />
+        )}
       </div>
     </div>
   );

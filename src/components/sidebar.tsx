@@ -16,11 +16,11 @@ export default function Sidebar({ setSelectedComponent }: SidebarProps) {
 
   const handleCategoryClick = (categoryName: string) => {
     setSelectedComponent(categoryName);
-    router.push(`/${categoryName.toLowerCase().replace(/\s+/g, '-')}`); 
+    router.push(`/${categoryName.toLowerCase().replace(/\s+/g, '-')}`);
   };
 
   return (
-    <aside className="w-64 p-6 bg-gray-100">
+    <aside className="w-64 p-6 bg-gray-100 h-full lg:h-auto lg:relative">
       <ul>
         {categories.map((category) => (
           <li key={category.name} className="mb-6">

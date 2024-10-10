@@ -41,7 +41,6 @@ export default function EditProduct() {
   };
 
   const handleUpdateProduct = () => {
-    // Update product logic here
     console.log('Product updated:', product);
   };
 
