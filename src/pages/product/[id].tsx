@@ -1,9 +1,9 @@
-import { getProduct } from "@/services/api";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { getProduct, deleteProduct } from "@/services/api";
 
 interface Product {
-  id: string;
+  id: number; 
   name: string;
   category: string;
   price: number;
@@ -14,29 +14,44 @@ interface Product {
 }
 
 export default function ProductDetail() {
-  const id: string =
-    typeof window !== "undefined"
-      ? window.location.pathname.split("/").pop() || ""
-      : "";
+  const router = useRouter();
+  const { id } = router.query;
 
   const { data, isLoading, error } = useQuery<Product, Error>({
     queryKey: ["product", id],
-    queryFn: () => getProduct(id), 
+    queryFn: () => {
+      if (!id) return Promise.reject("No ID");
+      return getProduct(id as string);
+    },
     enabled: !!id, 
   });
 
-  console.log(id, "id");
+  const mutation = useMutation({
+    mutationFn: () => {
+      if (data) {
+        return deleteProduct(data.id); 
+      }
+      return Promise.reject("No product data");
+    },
+    onSuccess: () => {
+      console.log("Product deleted successfully!");
+      router.push("/product"); 
+    },
+    onError: (error) => {
+      console.error("Error deleting product:", error);
+      alert('Failed to delete the product: ' + (error.response?.data?.message || error.message));
+    },
+  });
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading product.</p>;
-
   if (!data) return <p>No product found.</p>;
 
   const product: Product = data;
 
   return (
     <div>
-      <a href="#" className="text-blue-500">
+      <a href="/products" className="text-blue-500">
         ← Back to Products
       </a>
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
@@ -73,7 +88,10 @@ export default function ProductDetail() {
               <button className="bg-blue-500 text-white py-2 px-4 rounded-lg">
                 Edit Product
               </button>
-              <button className="bg-red-500 text-white py-2 px-4 rounded-lg">
+              <button
+                className="bg-red-500 text-white py-2 px-4 rounded-lg"
+                onClick={() => mutation.mutate()}
+              >
                 Delete Product
               </button>
             </div>
