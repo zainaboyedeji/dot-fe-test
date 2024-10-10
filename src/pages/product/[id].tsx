@@ -42,13 +42,13 @@ export default function ProductDetail() {
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         <div className="flex flex-col lg:flex-row">
           <div className="bg-gray-200 w-full lg:w-1/2 h-64 rounded-lg">
-            <Image
+            {/* <Image
               src={product.imageUrl} 
               alt="Product Image"
               width={100}
               height={100}
               priority
-            />
+            /> */}
           </div>
           <div className="flex-1 lg:ml-8 mt-4 lg:mt-0">
             <p className="text-sm text-gray-500">{product.category}</p>

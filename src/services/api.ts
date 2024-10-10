@@ -1,6 +1,5 @@
 import api from "@/util/api";
 import { apiEndpoints } from "@/util/endpoints";
-import { AxiosResponse } from "axios";
 
 interface Product {
   id: string;
@@ -64,20 +63,21 @@ export async function createProduct(payload: any) {
     throw error;
   }
 }
-
 export async function updateProduct(payload: any) {
   try {
-    const response = await api.put(
+    const response = await api.patch(
       `${apiEndpoints.products.UPDATE_PRODUCT}/${payload.id}`,
       payload
     );
-    return response;
+    return response.data;
   } catch (error) {
-    throw error;
+    console.error('Update Product Error:', error.response?.data || error.message);
+    throw error; 
   }
 }
 
-export async function deleteRole(id: number) {
+
+export async function deleteProduct(id: number) {
   try {
     const response = await api.delete(
       `${apiEndpoints.products.DELETE_PRODUCT}/${id}`

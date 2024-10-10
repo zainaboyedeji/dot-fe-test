@@ -7,13 +7,15 @@ import { getAllProducts } from "@/services/api";
 
 export default function Products() {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPage, setTotalPage] = useState<number>(1);
+  const [totalPages, setTotalPage] = useState<number>(1);
 
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products", currentPage,totalPage], 
+    queryKey: ["products", currentPage,totalPages], 
     queryFn: getAllProducts,
   });
+
+  console.log(currentPage,totalPages,data)
 
   const products = data?.products || []; 
 
@@ -36,8 +38,8 @@ export default function Products() {
         <ProductList products={products} />
       )}
       <Pagination
-        currentPage={currentPage}
-        totalPages={totalPage} 
+        currentPage={data?.currentPage}
+        totalPages={data?.totalPages} 
         onPageChange={handlePageChange}
       />
     </div>

@@ -1,14 +1,7 @@
-import { createProduct } from '@/services/api';
-import {
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import React, { useState, ChangeEvent } from 'react';
-
-interface Specification {
-  key: string;
-  value: string;
-}
+import { createProduct } from "@/services/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useState, ChangeEvent } from "react";
+import { useRouter } from "next/router";
 
 interface Product {
   name: string;
@@ -19,94 +12,76 @@ interface Product {
   stock: number;
   description: string;
   imageUrl: string;
-  specifications: Specification[];
 }
 
 export default function CreateProduct() {
+  const router = useRouter();
+
   const [product, setProduct] = useState<Product>({
-    name: '',
-    brand: '',
-    category: '',
-    subCategory: '',
+    name: "",
+    brand: "",
+    category: "",
+    subCategory: "",
     price: 0,
     stock: 0,
-    description: '',
-    imageUrl: '',
-    specifications: [{ key: '', value: '' }],
+    description: "",
+    imageUrl: "",
   });
 
   const queryClient = useQueryClient();
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
-    // Convert price and stock to numbers if they are inputs
-    if (name === 'price' || name === 'stock') {
+    if (name === "price" || name === "stock") {
       setProduct((prevProduct) => ({
         ...prevProduct,
-        [name]: parseFloat(value), // Ensure it is a float for price
+        [name]: parseFloat(value),
       }));
     } else {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
   };
 
-  const handleSpecificationChange = (index: number, field: keyof Specification, value: string) => {
-    const newSpecifications = [...product.specifications];
-    newSpecifications[index][field] = value;
-    setProduct((prevProduct) => ({ ...prevProduct, specifications: newSpecifications }));
-  };
-
-  const addSpecification = () => {
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      specifications: [...prevProduct.specifications, { key: '', value: '' }],
-    }));
-  };
-
   const mutation = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      // Reset the product state after successful creation
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      router.push("/");
       setProduct({
-        name: '',
-        brand: '',
-        category: '',
-        subCategory: '',
+        name: "",
+        brand: "",
+        category: "",
+        subCategory: "",
         price: 0,
         stock: 0,
-        description: '',
-        imageUrl: '',
-        specifications: [{ key: '', value: '' }],
+        description: "",
+        imageUrl: "",
       });
     },
     onError: (error: any) => {
       console.error("Error creating product:", error);
-      // Handle error case (e.g., show a message to the user)
     },
   });
 
   const handleCreateProduct = () => {
-    // Ensure product has valid data before mutation
     const isValid =
       product.name &&
       product.brand &&
       product.category &&
       product.subCategory &&
-      product.price > 0 && // Must be a positive number
-      Number.isInteger(product.stock) && // Must be an integer
-      product.stock >= 0 && // Must be non-negative
+      product.price > 0 &&
+      Number.isInteger(product.stock) &&
+      product.stock >= 0 &&
       product.description;
 
     if (!isValid) {
       console.error("Product data is invalid:", product);
-      // Optionally show an error message to the user
       return;
     }
 
-    // Perform the mutation
     mutation.mutate(product);
   };
 
@@ -167,7 +142,7 @@ export default function CreateProduct() {
             onChange={handleInputChange}
             className="border rounded-lg p-2 w-full"
             placeholder="0"
-            min="0" // Ensures no negative input
+            min="0"
           />
         </div>
         <div>
@@ -179,7 +154,7 @@ export default function CreateProduct() {
             onChange={handleInputChange}
             className="border rounded-lg p-2 w-full"
             placeholder="0"
-            min="0" // Ensures no negative input
+            min="0"
           />
         </div>
       </div>
@@ -205,33 +180,6 @@ export default function CreateProduct() {
         />
       </div>
 
-      <div className="mt-4">
-        <h3 className="text-lg font-bold mb-2">Specifications</h3>
-        {product.specifications.map((spec, index) => (
-          <div key={index} className="flex gap-4 mb-4">
-            <input
-              type="text"
-              value={spec.key}
-              onChange={(e) => handleSpecificationChange(index, 'key', e.target.value)}
-              placeholder="Key"
-              className="border rounded-lg p-2 w-1/2"
-            />
-            <input
-              type="text"
-              value={spec.value}
-              onChange={(e) => handleSpecificationChange(index, 'value', e.target.value)}
-              placeholder="Value"
-              className="border rounded-lg p-2 w-1/2"
-            />
-          </div>
-        ))}
-        <button
-          onClick={addSpecification}
-          className="bg-blue-500 text-white px-4 py-2 rounded-full"
-        >
-          Add
-        </button>
-      </div>
       <div className="flex justify-end mt-6 space-x-4">
         <button className="bg-gray-300 px-4 py-2 rounded-full">Cancel</button>
         <button
