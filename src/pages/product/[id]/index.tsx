@@ -1,5 +1,5 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { getProduct, deleteProduct } from "@/services/api";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -28,8 +28,6 @@ export default function ProductDetail() {
     },
     enabled: !!id,
   });
-  
-  
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -64,13 +62,7 @@ export default function ProductDetail() {
       <div className="bg-white p-6 rounded-lg shadow-md mt-6">
         <div className="flex flex-col lg:flex-row">
           <div className="bg-gray-200 w-full lg:w-1/2 h-64 rounded-lg">
-            {/* <Image
-              src={product.imageUrl} 
-              alt="Product Image"
-              width={100}
-              height={100}
-              priority
-            /> */}
+            {/* <Image src={product.imageUrl} alt="Product Image" width={100} height={100} priority /> */}
           </div>
           <div className="flex-1 lg:ml-8 mt-4 lg:mt-0">
             <p className="text-sm text-gray-500">{product.category}</p>
@@ -89,7 +81,22 @@ export default function ProductDetail() {
               </button>
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg"
-                onClick={() => router.push(`/product/${product.id}/edit`)}
+                onClick={() =>
+                  router.push({
+                    pathname: `/product/${product.id}/edit`,
+                    query: {
+                      name: product.name,
+                      brand: product.brand,
+                      category: product.category,
+                      price: product.price,
+                      stock: product.stock,
+                      description: product.description,
+                      rating: product.rating,
+                      reviews: product.reviews,
+                      imageUrl: product.imageUrl,
+                    },
+                  })
+                }
               >
                 Edit Product
               </button>

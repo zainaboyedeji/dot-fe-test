@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { updateProduct } from "@/services/api";
 import { useRouter } from "next/router";
+import { updateProduct } from "@/services/api";
 
 interface Product {
   id: number;
@@ -19,21 +19,32 @@ interface Product {
 
 export default function EditProduct() {
   const router = useRouter();
+  const {
+    id,
+    name,
+    brand,
+    category,
+    subCategory,
+    price,
+    stock,
+    description,
+    reviews,
+    rating,
+    imageUrl,
+  } = router.query;
 
-  const { id } = router.query;
-  const parsedId = typeof id === "string" ? Number(id) : undefined;
   const [product, setProduct] = useState<Product>({
-    id: parsedId ?? 0,
-    name: "",
-    brand: "",
-    category: "",
-    subCategory: "",
-    price: 0,
-    stock: 0,
-    description: "",
-    reviews:"",
-    rating:"",
-    imageUrl:"",
+    id: Number(id) || 0,
+    name: name as string || "",
+    brand: brand as string || "",
+    category: category as string || "",
+    subCategory: subCategory as string || "",
+    price: Number(price) || 0,
+    stock: Number(stock) || 0,
+    description: description as string || "",
+    reviews: reviews as string || "",
+    rating: rating as string || "",
+    imageUrl: imageUrl as string || "",
   });
 
   const [errors, setErrors] = useState<{ price?: string; stock?: string }>({});
@@ -42,11 +53,10 @@ export default function EditProduct() {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
-    const newValue =
-      name === "price" || name === "stock" ? Number(value) : value;
-
-    setProduct((prevProduct) => ({ ...prevProduct, [name]: newValue }));
+    setProduct((prev) => ({
+      ...prev,
+      [name]: name === "price" || name === "stock" ? Number(value) : value,
+    }));
   };
 
   const validateInputs = () => {
@@ -155,12 +165,12 @@ export default function EditProduct() {
           name="description"
           value={product.description}
           onChange={handleInputChange}
-          className="border rounded-lg p-2 w-full"
-        />
+          className="border rounded-lg p-2 w-full h-24"
+        ></textarea>
       </div>
       <button
         onClick={handleUpdateProduct}
-        className="mt-6 bg-blue-500 text-white px-4 py-2 rounded-full"
+        className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
       >
         Update Product
       </button>
