@@ -29,6 +29,7 @@ export default function CreateProduct() {
     imageUrl: "",
   });
 
+  const [errors, setErrors] = useState<Partial<Product>>({});
   const queryClient = useQueryClient();
 
   const handleInputChange = (
@@ -44,6 +45,25 @@ export default function CreateProduct() {
     } else {
       setProduct((prevProduct) => ({ ...prevProduct, [name]: value }));
     }
+
+    // Clear the specific error when the user starts typing
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+  };
+
+  const validateProduct = () => {
+    const newErrors: Partial<Product> = {};
+
+    if (!product.name) newErrors.name = "Product name is required";
+    if (!product.brand) newErrors.brand = "Brand is required";
+    if (!product.category) newErrors.category = "Category is required";
+    if (!product.subCategory) newErrors.subCategory = "Sub Category is required";
+    if (product.price <= 0) newErrors.price = "Price must be greater than 0";
+    if (!Number.isInteger(product.stock) || product.stock < 0)
+      newErrors.stock = "Stock must be a non-negative integer";
+    if (!product.description) newErrors.description = "Description is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const mutation = useMutation({
@@ -63,28 +83,15 @@ export default function CreateProduct() {
         imageUrl: "",
       });
     },
-    onError: (error: unknown) => {
+    onError: (error: any) => {
       notifyError(error.message);
     },
   });
 
   const handleCreateProduct = () => {
-    const isValid =
-      product.name &&
-      product.brand &&
-      product.category &&
-      product.subCategory &&
-      product.price > 0 &&
-      Number.isInteger(product.stock) &&
-      product.stock >= 0 &&
-      product.description;
-
-    if (!isValid) {
-      console.error("Product data is invalid:", product);
-      return;
+    if (validateProduct()) {
+      mutation.mutate(product);
     }
-
-    mutation.mutate(product);
   };
 
   return (
@@ -101,6 +108,7 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Product Name"
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Brand</label>
@@ -112,6 +120,7 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Brand"
           />
+          {errors.brand && <p className="text-red-500 text-sm">{errors.brand}</p>}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Category</label>
@@ -123,6 +132,7 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Category"
           />
+          {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Sub Category</label>
@@ -134,6 +144,7 @@ export default function CreateProduct() {
             className="border rounded-lg p-2 w-full"
             placeholder="Sub Category"
           />
+          {errors.subCategory && <p className="text-red-500 text-sm">{errors.subCategory}</p>}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Price</label>
@@ -146,6 +157,7 @@ export default function CreateProduct() {
             placeholder="0"
             min="0"
           />
+          {errors.price && <p className="text-red-500 text-sm">{errors.price}</p>}
         </div>
         <div>
           <label className="block text-sm font-bold mb-2">Stock</label>
@@ -158,6 +170,7 @@ export default function CreateProduct() {
             placeholder="0"
             min="0"
           />
+          {errors.stock && <p className="text-red-500 text-sm">{errors.stock}</p>}
         </div>
       </div>
       <div>
@@ -169,6 +182,9 @@ export default function CreateProduct() {
           className="border rounded-lg p-2 w-full"
           placeholder="Description"
         />
+        {errors.description && (
+          <p className="text-red-500 text-sm">{errors.description}</p>
+        )}
       </div>
       <div>
         <label className="block text-sm font-bold mb-2">Image URL</label>

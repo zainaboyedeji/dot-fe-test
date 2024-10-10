@@ -22,7 +22,7 @@ interface Product {
 export default function EditProduct() {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
-  const [errors, setErrors] = useState<{ price?: string; stock?: string }>({});
+  const [errors, setErrors] = useState<Partial<Product>>({});
 
   useEffect(() => {
     const storedProduct = localStorage.getItem("editProduct");
@@ -39,16 +39,24 @@ export default function EditProduct() {
       ...prev!,
       [name]: name === "price" || name === "stock" ? Number(value) : value,
     }));
+
+    // Clear specific error when user starts typing
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const validateInputs = () => {
-    const newErrors: { price?: string; stock?: string } = {};
-    if (product && product.price <= 0) {
+    const newErrors: Partial<Product> = {};
+    if (!product?.name) newErrors.name = "Product name is required";
+    if (!product?.brand) newErrors.brand = "Brand is required";
+    if (!product?.category) newErrors.category = "Category is required";
+    if (!product?.subCategory) newErrors.subCategory = "Sub category is required";
+    if (product?.price !== undefined && product.price <= 0) {
       newErrors.price = "Price must be a positive number";
     }
-    if (product && (product.stock < 0 || !Number.isInteger(product.stock))) {
+    if (product?.stock !== undefined && (product.stock < 0 || !Number.isInteger(product.stock))) {
       newErrors.stock = "Stock must be a non-negative integer";
     }
+    if (!product?.description) newErrors.description = "Description is required";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -77,7 +85,7 @@ export default function EditProduct() {
 
   return (
     <>
-      <div className="flex">
+      <div className="flex cursor-pointer" onClick={() => router.push("/product")}>
         <FaArrowLeft className="mr-2 mt-1" />
         Back to products
       </div>
@@ -93,6 +101,7 @@ export default function EditProduct() {
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             />
+            {errors.name && <p className="text-red-500">{errors.name}</p>}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Brand</label>
@@ -103,6 +112,7 @@ export default function EditProduct() {
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             />
+            {errors.brand && <p className="text-red-500">{errors.brand}</p>}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Category</label>
@@ -113,6 +123,7 @@ export default function EditProduct() {
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             />
+            {errors.category && <p className="text-red-500">{errors.category}</p>}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Sub Category</label>
@@ -123,6 +134,7 @@ export default function EditProduct() {
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             />
+            {errors.subCategory && <p className="text-red-500">{errors.subCategory}</p>}
           </div>
           <div>
             <label className="block text-sm font-bold mb-2">Price</label>
@@ -155,6 +167,7 @@ export default function EditProduct() {
             onChange={handleInputChange}
             className="border rounded-lg p-2 w-full h-32"
           />
+          {errors.description && <p className="text-red-500">{errors.description}</p>}
         </div>
         <div className="flex justify-end mt-4">
           <button

@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { getProduct, deleteProduct } from "@/services/api";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
+import { notifyError, notifySuccess } from "@/util/utils";
 
 interface Product {
   id: number;
@@ -37,10 +38,11 @@ export default function ProductDetail() {
       return Promise.reject("No product data");
     },
     onSuccess: () => {
+      notifySuccess("Produt Deleted Succesfully")
       router.push("/product");
     },
     onError: (error) => {
-      console.error("Error deleting product:", error);
+      notifyError(error.message);
     },
   });
 
